@@ -1,0 +1,4797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Integral DAT v5.0 ENTERPRISE</title>
+
+<style>
+:root{
+  --primary:#2563eb;
+  --sidebar:#0f172a;
+  --bg:#f3f6fb;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --danger:#dc2626;
+  --warning:#f59e0b;
+  --success:#16a34a;
+  --text:#1f2937;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  height:100vh;
+}
+
+/* ======================
+   SIDEBAR
+====================== */
+
+.sidebar{
+  width:260px;
+  background:var(--sidebar);
+  color:white;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+}
+
+.sidebar h2{
+  margin-top:0;
+  font-size:18px;
+}
+
+.nav-item{
+  padding:8px 10px;
+  border-radius:6px;
+  margin:6px 0;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.nav-item:hover{
+  background:#1e293b;
+}
+
+.nav-item.active{
+  background:var(--primary);
+}
+
+/* ======================
+   MAIN
+====================== */
+
+.main{
+  display:flex;
+  flex-direction:column;
+  flex:1;              /* 🔥 ESTA LÍNEA ES LA CLAVE */
+  min-width:0;
+}
+
+.topbar{
+  background:white;
+  padding:12px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.content{
+  padding:20px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  flex:1;
+  min-width:0;   /* 🔥 ESTA ES LA CLAVE */
+}
+
+.card{
+  max-width:100%;
+  overflow:hidden;
+}
+
+html, body{
+  overflow-x:hidden;
+}
+
+.app{
+  display:flex;
+  width:100%;
+  max-width:100vw;   /* 🔥 esto elimina el espacio fantasma */
+}
+
+.content{
+  flex:1;
+  min-width:0;
+  width:100%;
+}
+/* ======================
+   CARDS
+====================== */
+
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,.05);
+  margin-bottom:20px;
+}
+
+/* ======================
+   BUTTONS
+====================== */
+
+button{
+  padding:6px 10px;
+  border-radius:6px;
+  border:1px solid var(--border);
+  cursor:pointer;
+  font-size:13px;
+}
+
+button.primary{
+  background:var(--primary);
+  color:white;
+  border:none;
+}
+
+button.danger{
+  background:var(--danger);
+  color:white;
+  border:none;
+}
+
+button.warning{
+  background:var(--warning);
+  color:white;
+  border:none;
+}
+
+/* ======================
+   TABLES
+====================== */
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+th,td{
+  padding:8px;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
+  text-align:left;
+}
+
+/* ======================
+   MODAL
+====================== */
+
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.5);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.modal{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  width:500px;
+  max-height:85vh;
+  overflow:auto;
+}
+
+.form-group{
+  margin-bottom:14px;
+  display:flex;
+  flex-direction:column;
+}
+
+.form-group label{
+  font-size:12px;
+  margin-bottom:4px;
+  font-weight:bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+  padding:6px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  font-size:13px;
+}
+
+.modal-actions{
+  margin-top:15px;
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+}
+
+/* ======================
+   TOAST
+====================== */
+
+.toast{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:white;
+  padding:12px 18px;
+  border-radius:8px;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+  display:none;
+  z-index:1000;
+  font-size:13px;
+}
+
+.toast.success{border-left:5px solid var(--success);}
+.toast.error{border-left:5px solid var(--danger);}
+.toast.info{border-left:5px solid var(--primary);}
+
+/* ======================
+   BADGES
+====================== */
+
+.badge{
+  padding:3px 6px;
+  border-radius:4px;
+  font-size:11px;
+  color:white;
+}
+
+.badge.ok{background:var(--success);}
+.badge.prod{background:var(--primary);}
+.badge.inc{background:var(--danger);}
+
+/* ======================
+   KPI DASHBOARD
+====================== */
+
+.kpi-container{
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.kpi-card{
+  flex:1;
+  min-width:200px;
+  padding:20px;
+  border-radius:12px;
+  background:white;
+  box-shadow:0 4px 12px rgba(0,0,0,.05);
+  border-left:6px solid var(--primary);
+}
+
+.kpi-card h4{
+  margin:0;
+  font-size:13px;
+  color:#555;
+}
+
+.kpi-card span{
+  font-size:26px;
+  font-weight:bold;
+}
+
+/* ======================
+   GANTT (BASE)
+====================== */
+
+.gantt-wrapper{
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  border:1px solid var(--border);
+  position:relative;
+}
+
+/* Fijar columna izquierda */
+.g-label{
+  position:sticky;
+  left:0;
+  z-index:2;
+  background:white;
+  border-right:1px solid var(--border);
+}
+
+.g-row-grid{
+  display:grid;
+  align-items:center;
+  border-bottom:1px solid #eee;
+}
+
+.g-label{
+  padding-left:6px;
+  font-size:12px;
+  border-right:1px solid var(--border);
+  height:30px;
+  display:flex;
+  align-items:center;
+  background:white;
+}
+
+.g-day-cell{
+  border-right:1px solid #f0f0f0;
+  height:30px;
+}
+
+.g-bar{
+  height:18px;
+  background:var(--primary);
+  border-radius:4px;
+  align-self:center;
+}
+
+.g-cell{
+  text-align:center;
+  font-size:11px;
+  border-right:1px solid #eee;
+  padding:4px 0;
+}
+
+.g-weekend{
+  background:#f1f1f1;
+}
+
+.g-today{
+  background:#dbeafe;
+}
+
+.status-aprobado{
+  color:#16a34a;
+  font-weight:bold;
+}
+
+.status-incidencia{
+  color:#dc2626;
+  font-weight:bold;
+}
+
+
+.status-warning{
+  color:#f59e0b;
+  font-weight:bold;
+}
+
+.status-critico{
+  color:black;
+  font-weight:bold;
+}
+
+.status-nueva{background:#fecaca;}
+.status-datos{background:#e9d5ff;}
+.status-analisis{background:#fed7aa;}
+.status-confirmada{background:#fef08a;}
+.status-asignada{background:#bae6fd;}
+.status-suspendida{background:#ef4444;color:white;}
+.status-atendida{background:#bbf7d0;}
+.status-cerrada{background:#e5e7eb;}
+
+#hdDashboard .card{
+  cursor:pointer;
+  user-select:none;
+  transition:transform .1s ease, box-shadow .1s ease;
+}
+
+#hdDashboard .card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 14px rgba(0,0,0,.1);
+}
+
+#hdDashboard .card:active{
+  transform:scale(0.97);
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>Sistema DAT v5.0</h2>
+
+  <div class="nav-item active" data-route="dashboard">Dashboard</div>
+  <div class="nav-item" data-route="equipos">Equipos</div>
+  <div class="nav-item" data-route="plan">Plan de Trabajo</div>
+  <div class="nav-item" data-route="riesgos">Riesgos</div>
+  <div class="nav-item" data-route="dependencias">Dependencias</div>
+  <div class="nav-item" data-route="desviaciones">Desviaciones</div>
+  <div class="nav-item" data-route="pruebas">Pruebas</div>
+  <div class="nav-item" data-route="costos">Costos</div>
+  <div class="nav-item" data-route="seguimiento">Entregables Varios Clientes</div>
+  <div class="nav-item" data-route="incidencias">Incidencias</div>
+  <div class="nav-item" data-route="bitacora">Bitácora</div>
+  <div class="nav-item" data-route="minutas">Minutas</div>
+  <div class="nav-item" onclick="renderHD()">HDs</div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+  <div>
+    Proyecto:
+    <select id="projectSelector"></select>
+    <button class="primary" id="btnNuevoProyecto">Nuevo</button>
+    <button class="danger" onclick="deleteProject()">Eliminar</button>
+  </div>
+</div>
+
+
+  <div class="content" id="app"></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   ARQUITECTURA BASE MULTI-PROYECTO ENTERPRISE
+========================================================= */
+
+const STORAGE_KEY = "DAT_V5_ENTERPRISE";
+let currentRoute = "dashboard";
+
+/* =========================
+   STORE
+========================= */
+const Store = {
+state:{
+  currentProjectId:null,
+  projects:{},
+  seguimientoGlobal:[],
+  hdsGlobal:[]
+},
+
+  init(){
+
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+    if(saved){
+      this.state = saved;
+    if(!this.state.seguimientoGlobal){
+    this.state.seguimientoGlobal = [];
+    }
+    } else {
+      const id = this.generateId();
+      this.state.currentProjectId = id;
+      this.state.projects[id] = this.createEmptyProject("Proyecto Inicial");
+      this.save();
+    }
+  },
+
+  createEmptyProject(name){
+    return {
+      name:name,
+      equipos:[],
+      plan:[],
+      riesgos:[],
+      dependencias:[],
+      desviacionesInternas:[],
+      desviacionesCliente:[],
+      pruebasInternas:[],
+      pruebasProductivas:[],
+      pruebasCliente:[],
+      costos:[],
+      counters:{}
+    };
+  },
+
+  getProject(){
+
+  const p = this.state.projects[this.state.currentProjectId];
+
+  if(!p){
+    return this.createEmptyProject("Proyecto Recuperado");
+  }
+
+  normalizeProjectStructure(p);
+
+  return p;
+},
+
+
+  save(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+  },
+
+  nextId(module){
+    const p = this.getProject();
+    if(!p.counters[module]) p.counters[module] = 1;
+    return p.counters[module]++;
+  },
+
+  generateId(){
+    return "proj-" + Date.now() + "-" + Math.floor(Math.random()*1000);
+  }
+
+};
+
+function normalizeProjectStructure(p){
+
+  if(!p.equipos) p.equipos = [];
+  if(!p.plan) p.plan = [];
+  if(!p.riesgos) p.riesgos = [];
+  if(!p.dependencias) p.dependencias = [];
+  if(!p.desviacionesInternas) p.desviacionesInternas = [];
+  if(!p.desviacionesCliente) p.desviacionesCliente = [];
+  if(!p.pruebasInternas) p.pruebasInternas = [];
+  if(!p.pruebasProductivas) p.pruebasProductivas = [];
+  if(!p.pruebasCliente) p.pruebasCliente = [];
+  if(!p.costos) p.costos = [];
+  if(!p.seguimiento) p.seguimiento = [];
+  if(!p.counters) p.counters = {};
+  if(!p.incidencias) p.incidencias = [];
+  if(!p.bitacora) p.bitacora = [];
+  if(!p.minutas) p.minutas = [];
+
+}
+
+/* =========================
+   UI UTILIDADES
+========================= */
+
+const UI = {
+
+  openModal(html){
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalOverlay").style.display = "flex";
+  },
+
+  closeModal(){
+    document.getElementById("modalOverlay").style.display = "none";
+  },
+
+  toast(message, type="info"){
+    const t = document.getElementById("toast");
+    t.className = "toast " + type;
+    t.innerText = message;
+    t.style.display = "block";
+    setTimeout(()=>t.style.display="none",3000);
+  }
+
+};
+
+
+/* =========================
+   PROYECTOS MULTI
+========================= */
+
+function renderProjectSelector(){
+
+  const select = document.getElementById("projectSelector");
+  select.innerHTML = "";
+
+  Object.entries(Store.state.projects).forEach(([id,p])=>{
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = p.name;
+    if(id === Store.state.currentProjectId){
+      option.selected = true;
+    }
+    select.appendChild(option);
+  });
+}
+
+document.getElementById("projectSelector").addEventListener("change",(e)=>{
+
+  Store.state.currentProjectId = e.target.value;
+  Store.save();
+
+  // 🔥 Limpieza visual completa
+  document.getElementById("app").innerHTML = "";
+
+  // 🔥 Render limpio del módulo actual
+  renderRoute(currentRoute);
+
+});
+
+
+
+document.getElementById("btnNuevoProyecto").addEventListener("click",()=>{
+
+  UI.openModal(`
+    <h3>Nuevo Proyecto</h3>
+
+    <div class="form-group">
+      <label>Nombre del Proyecto</label>
+      <input id="nuevoProyectoNombre">
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="crearProyecto()">Crear</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+
+});
+
+function crearProyecto(){
+
+  const nombre = document.getElementById("nuevoProyectoNombre").value.trim();
+  if(!nombre){
+    UI.toast("Debe ingresar un nombre","error");
+    return;
+  }
+
+  const id = Store.generateId();
+  Store.state.projects[id] = Store.createEmptyProject(nombre);
+  Store.state.currentProjectId = id;
+
+  Store.save();
+  renderProjectSelector();
+  renderRoute("dashboard");
+
+  UI.closeModal();
+  UI.toast("Proyecto creado","success");
+}
+
+function deleteProject(){
+
+  const confirmar = confirm(
+    "¿Seguro que deseas eliminar este proyecto? Esta acción no se puede deshacer."
+  );
+
+  if(!confirmar) return;
+
+  const currentId = Store.state.currentProjectId;
+
+  // Eliminar proyecto actual
+  delete Store.state.projects[currentId];
+
+  const remainingIds = Object.keys(Store.state.projects);
+
+  if(remainingIds.length > 0){
+    // Activar el primero disponible
+    Store.state.currentProjectId = remainingIds[0];
+  } else {
+    // Crear proyecto vacío automáticamente
+    const id = Store.generateId();
+    Store.state.currentProjectId = id;
+    Store.state.projects[id] = Store.createEmptyProject("Proyecto Inicial");
+  }
+
+  Store.save();
+  renderProjectSelector();
+  renderRoute("dashboard");
+
+  UI.toast("Proyecto eliminado","info");
+}
+
+
+
+/* =========================
+   ROUTING
+========================= */
+
+document.querySelectorAll(".nav-item").forEach(item=>{
+  item.addEventListener("click",()=>{
+    document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
+    item.classList.add("active");
+    renderRoute(item.dataset.route);
+  });
+});
+
+function renderRoute(route){
+
+  currentRoute = route;
+
+  if(route==="dashboard") renderDashboard();
+  if(route==="equipos") renderEquipos();
+  if(route==="plan") renderPlan();
+  if(route==="riesgos") renderRiesgos();
+  if(route==="dependencias") renderDependencias();
+  if(route==="desviaciones") renderDesviaciones();
+  if(route==="pruebas") renderPruebas();
+  if(route==="costos") renderCostos();
+  if(route==="seguimiento") renderSeguimiento();
+  if(route==="incidencias") renderIncidencias();
+  if(route==="bitacora") renderBitacora();
+  if(route==="minutas") renderMinutas();
+
+}
+
+
+/* =========================================================
+   FIN BLOQUE 2
+========================================================= */
+/* =========================================================
+   DASHBOARD REACTIVO PROFESIONAL
+========================================================= */
+
+function renderDashboard(){
+
+  const p = Store.getProject();
+
+  // 🔒 Blindaje estructural
+  if(!p.riesgos) p.riesgos = [];
+  if(!p.dependencias) p.dependencias = [];
+  if(!p.desviacionesInternas) p.desviacionesInternas = [];
+  if(!p.desviacionesCliente) p.desviacionesCliente = [];
+  if(!p.pruebasInternas) p.pruebasInternas = [];
+  if(!p.pruebasProductivas) p.pruebasProductivas = [];
+  if(!p.pruebasCliente) p.pruebasCliente = [];
+  if(!p.costos) p.costos = [];
+
+  // 🔹 Riesgos
+  const riesgosAbiertos = p.riesgos.filter(r=>r.estado==="Abierto").length;
+  const riesgosCerrados = p.riesgos.filter(r=>r.estado==="Cerrado").length;
+
+  // 🔹 Dependencias
+  const depPendientes = p.dependencias.filter(d=>d.estado==="Pendiente").length;
+  const depRecibidas = p.dependencias.filter(d=>d.estado==="Recibido").length;
+
+  // 🔹 Desviaciones
+  const todasDesv = [...p.desviacionesInternas,...p.desviacionesCliente];
+  const desvAbiertas = todasDesv.filter(d=>d.estado==="Abierta").length;
+  const desvCerradas = todasDesv.filter(d=>d.estado==="Cerrada").length;
+
+  // 🔹 Pruebas (última versión)
+  const todasPruebas = [
+    ...p.pruebasInternas,
+    ...p.pruebasProductivas,
+    ...p.pruebasCliente
+  ];
+
+  let incidencias = 0;
+let correctas = 0;
+
+todasPruebas.forEach(pr=>{
+
+  const lista = pr.versiones || [];
+
+  if(lista.length){
+
+    const ultima = lista[lista.length-1];
+    
+
+    const estatus = (ultima.estatus || "").trim();
+
+    if(estatus.toLowerCase()==="incidencia"){
+      incidencias++;
+    }
+
+    if(estatus.toLowerCase()==="correcta"){
+      correctas++;
+    }
+
+  }
+
+});
+
+  // 🔹 Costos
+  let totalCosto = 0;
+  let total130 = 0;
+  let totalFinal = 0;
+
+  p.costos.forEach(c=>{
+    const horas = Number(c["HORAS DESARROLLO"] || c["Horas Desarrollo"] || 0);
+    const costoHora = Number(c["COSTO HORA"] || c["Costo Hora"] || 0);
+    const base = horas * costoHora;
+    totalCosto += base;
+    total130 += base * 1.3;
+    totalFinal += base * 1.3 * 1.5;
+  });
+
+// 🔹 HDs (Equipos)
+
+let totalHD = 0;
+let totalDiasAtencion = 0;
+let activos = 0;
+let vencidos = 0;
+let cumplenSLA = 0;
+
+const SLA = 5; // días esperados
+
+if(p.equipos){
+
+  p.equipos.forEach(persona=>{
+
+    if(persona.hds){
+
+      persona.hds.forEach(hd=>{
+
+        totalHD++;
+
+        if(!hd.fechaAsignacion) return;
+
+        const inicio = new Date(hd.fechaAsignacion);
+        const fin = hd.fechaCierre
+          ? new Date(hd.fechaCierre)
+          : new Date();
+
+        const diff = Math.ceil(
+          (fin - inicio) / (1000*60*60*24)
+        );
+
+        totalDiasAtencion += diff;
+
+        if(!hd.fechaCierre){
+          activos++;
+          if(diff > SLA) vencidos++;
+        }
+
+        if(hd.fechaCierre && diff <= SLA){
+          cumplenSLA++;
+        }
+
+      });
+
+    }
+
+  });
+
+}
+
+const promedioAtencion = totalHD
+  ? (totalDiasAtencion / totalHD).toFixed(1)
+  : 0;
+
+const porcentajeSLA = totalHD
+  ? ((cumplenSLA / totalHD) * 100).toFixed(1)
+  : 0;
+
+
+  document.getElementById("app").innerHTML = `
+    <div class="kpi-container">
+
+      <div class="kpi-card">
+        <h4>Riesgos Abiertos</h4>
+        <span>${riesgosAbiertos}</span>
+      </div>
+
+      <div class="kpi-card">
+        <h4>Dependencias Pendientes</h4>
+        <span>${depPendientes}</span>
+      </div>
+
+      <div class="kpi-card">
+        <h4>Desviaciones Abiertas</h4>
+        <span>${desvAbiertas}</span>
+      </div>
+
+      <div class="kpi-card">
+        <h4>Pruebas con Incidencia</h4>
+        <span>${incidencias}</span>
+      </div>
+
+      <div class="kpi-card">
+        <h4>Total Costo</h4>
+        <span>$ ${totalCosto.toLocaleString()}</span>
+      </div>
+
+      <div class="kpi-card">
+        <h4>Total ×1.3</h4>
+        <span>$ ${total130.toLocaleString()}</span>
+      </div>
+
+      <div class="kpi-card">
+        <h4>Total ×1.3 ×1.5</h4>
+        <span>$ ${totalFinal.toLocaleString()}</span>
+      </div>
+      <div class="kpi-card">
+      <h4>Tiempo Promedio Atención (días)</h4>
+      <span>${promedioAtencion}</span>
+      </div>
+
+      <div class="kpi-card">
+      <h4>HD Activos</h4>
+      <span>${activos}</span>
+      </div>
+
+     <div class="kpi-card">
+     <h4>HD Vencidos (&gt; ${SLA} días)</h4>
+     <span>${vencidos}</span>
+     </div>
+
+     <div class="kpi-card">
+     <h4>% Cumplimiento SLA</h4>
+     <span>${porcentajeSLA}%</span>
+     </div>
+
+
+
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   MÓDULO EQUIPOS
+========================================================= */
+
+function renderEquipos(){
+
+  const p = Store.getProject();
+
+  let html = `
+    <div class="card">
+      <button class="primary" onclick="openEquipo()">+ Miembro</button>
+      <button onclick="exportHDs()">Exportar HDs</button>
+
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Área</th>
+          <th>Rol</th>
+          <th>HDs</th>
+          <th></th>
+        </tr>
+  `;
+
+  p.equipos.forEach(m=>{
+
+ if(!m.hds) m.hds = [];
+    html += `
+      <tr>
+        <td>${m.id}</td>
+        <td>${m.nombre}</td>
+        <td>${m.area}</td>
+        <td>${m.rol}</td>
+        <td>
+          <button onclick="toggleHDs(${m.id})">Ver (${m.hds?.length || 0})</button>
+          <button class="primary" onclick="openHD(${m.id})">+HD</button>
+        </td>
+        <td>
+          <button class="danger" onclick="deleteEquipo(${m.id})">X</button>
+        </td>
+      </tr>
+
+      <tr id="hdRow-${m.id}" style="display:none;">
+        <td colspan="6">
+          ${renderHDList(m)}
+        </td>
+      </tr>
+    `;
+  });
+
+  html += `
+      </table>
+      ${renderHDChart()}
+    </div>
+  `;
+
+  document.getElementById("app").innerHTML = html;
+}
+
+
+
+function openEquipo(){
+
+  UI.openModal(`
+    <h3>Nuevo Miembro</h3>
+
+    <div class="form-group">
+      <label>Nombre</label>
+      <input id="eqNombre">
+    </div>
+
+    <div class="form-group">
+      <label>Área</label>
+      <input id="eqArea">
+    </div>
+
+    <div class="form-group">
+      <label>Rol</label>
+      <input id="eqRol">
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addEquipo()">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+
+}
+
+
+function addEquipo(){
+
+  const nombre = document.getElementById("eqNombre").value.trim();
+  const area = document.getElementById("eqArea").value.trim();
+  const rol = document.getElementById("eqRol").value.trim();
+
+  if(!nombre){
+    UI.toast("Nombre requerido","error");
+    return;
+  }
+
+  Store.getProject().equipos.push({
+    id:Store.nextId("equipos"),
+    nombre,
+    area,
+    rol,
+    hds: []   // 🔥 NUEVA ESTRUCTURA
+  });
+
+  Store.save();
+  UI.closeModal();
+
+  if(currentRoute==="equipos") renderEquipos();
+  if(currentRoute==="dashboard") renderDashboard();
+
+  UI.toast("Miembro agregado","success");
+}
+
+
+function deleteEquipo(id){
+
+  const p = Store.getProject();
+  p.equipos = p.equipos.filter(e=>e.id!==id);
+
+  Store.save();
+
+  if(currentRoute==="equipos") renderEquipos();
+  if(currentRoute==="dashboard") renderDashboard();
+
+  UI.toast("Miembro eliminado","info");
+}
+
+function toggleHDs(id){
+  const row = document.getElementById("hdRow-"+id);
+  row.style.display = row.style.display==="none" ? "table-row" : "none";
+}
+
+function renderHDList(miembro){
+
+  if(!miembro.hds || !miembro.hds.length){
+    return "<em>No hay HD asignados</em>";
+  }
+
+  let html = `
+    <table>
+      <tr>
+        <th># HD</th>
+        <th>Descripción</th>
+        <th>Asignación</th>
+        <th>Estatus</th>
+        <th>Cierre</th>
+        <th></th>
+      </tr>
+  `;
+
+  miembro.hds.forEach(hd=>{
+    html+=`
+      <tr>
+        <td>${hd.numero}</td>
+        <td>${hd.descripcion}</td>
+        <td>${hd.fechaAsignacion}</td>
+        <td>${hd.estatus}</td>
+        <td>${hd.fechaCierre || "-"}</td>
+        <td>
+          <button onclick="editHD(${miembro.id},${hd.id})">Editar</button>
+          <button class="danger" onclick="deleteHD(${miembro.id},${hd.id})">Eliminar</button>
+       </td>
+      </tr>
+    `;
+  });
+
+  html+="</table>";
+  return html;
+}
+function openHD(miembroId){
+
+  UI.openModal(`
+    <h3>Nuevo HD</h3>
+
+    <div class="form-group">
+      <label>Número HD</label>
+      <input id="hdNumero">
+    </div>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <textarea id="hdDesc"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de asignación</label>
+      <input type="date" id="hdFechaAsignacion">
+    </div>
+
+    <div class="form-group">
+      <label>Estatus</label>
+      <select id="hdStatus">
+        <option>Asignado</option>
+        <option>Nuevo</option>
+        <option>Confirmado</option>
+        <option>Atendido</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de cierre (opcional)</label>
+      <input type="date" id="hdFechaCierre">
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addHD(${miembroId})">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function addHD(miembroId){
+
+  const p = Store.getProject();
+  const miembro = p.equipos.find(e=>e.id===miembroId);
+
+  if(!miembro){
+    UI.toast("Error interno: miembro no encontrado","error");
+    return;
+  }
+
+  // 🔥 CORRECCIÓN CLAVE
+  if(!miembro.hds){
+    miembro.hds = [];
+  }
+
+  const fechaAsignacion = document.getElementById("hdFechaAsignacion").value;
+
+  if(!fechaAsignacion){
+    UI.toast("La fecha de asignación es obligatoria","error");
+    return;
+  }
+
+  const nuevoHD = {
+    id: Store.nextId("hds"),
+    numero: document.getElementById("hdNumero").value,
+    descripcion: document.getElementById("hdDesc").value,
+    fechaAsignacion: fechaAsignacion,
+    estatus: document.getElementById("hdStatus").value,
+    fechaCierre: document.getElementById("hdFechaCierre").value || null
+  };
+
+  miembro.hds.push(nuevoHD);
+
+  Store.save();
+  UI.closeModal();
+  renderEquipos();
+}
+function editHD(miembroId, hdId){
+
+  const p = Store.getProject();
+  const miembro = p.equipos.find(e=>e.id===miembroId);
+
+  if(!miembro || !miembro.hds){
+    UI.toast("HD no encontrado","error");
+    return;
+  }
+
+  const hd = miembro.hds.find(h=>h.id===hdId);
+
+  if(!hd){
+    UI.toast("HD no encontrado","error");
+    return;
+  }
+
+  UI.openModal(`
+    <h3>Editar HD</h3>
+
+    <div class="form-group">
+      <label>Número HD</label>
+      <input id="editHdNumero" value="${hd.numero}">
+    </div>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <textarea id="editHdDesc">${hd.descripcion}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de asignación</label>
+      <input type="date" id="editHdFechaAsignacion" value="${hd.fechaAsignacion}">
+    </div>
+
+    <div class="form-group">
+      <label>Estatus</label>
+      <select id="editHdStatus">
+        <option ${hd.estatus==="Asignado"?"selected":""}>Asignado</option>
+        <option ${hd.estatus==="Nuevo"?"selected":""}>Nuevo</option>
+        <option ${hd.estatus==="Confirmado"?"selected":""}>Confirmado</option>
+        <option ${hd.estatus==="Atendido"?"selected":""}>Atendido</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de cierre</label>
+      <input type="date" id="editHdFechaCierre" value="${hd.fechaCierre || ""}">
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="updateHD(${miembroId},${hdId})">Guardar Cambios</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+function updateHD(miembroId, hdId){
+
+  const p = Store.getProject();
+  const miembro = p.equipos.find(e=>e.id===miembroId);
+
+  if(!miembro || !miembro.hds){
+    UI.toast("Error al actualizar HD","error");
+    return;
+  }
+
+  const hd = miembro.hds.find(h=>h.id===hdId);
+
+  if(!hd){
+    UI.toast("HD no encontrado","error");
+    return;
+  }
+
+  hd.numero = document.getElementById("editHdNumero").value;
+  hd.descripcion = document.getElementById("editHdDesc").value;
+  hd.fechaAsignacion = document.getElementById("editHdFechaAsignacion").value;
+  hd.estatus = document.getElementById("editHdStatus").value;
+  hd.fechaCierre = document.getElementById("editHdFechaCierre").value || null;
+
+  Store.save();
+  UI.closeModal();
+  renderEquipos();
+
+  UI.toast("HD actualizado","success");
+}
+function deleteHD(miembroId, hdId){
+
+  const p = Store.getProject();
+  const miembro = p.equipos.find(e=>e.id===miembroId);
+
+  if(!miembro || !miembro.hds){
+    UI.toast("HD no encontrado","error");
+    return;
+  }
+
+  const confirmar = confirm("¿Seguro que deseas eliminar este HD?");
+  if(!confirmar) return;
+
+  miembro.hds = miembro.hds.filter(h=>h.id!==hdId);
+
+  Store.save();
+  renderEquipos();
+
+  UI.toast("HD eliminado","info");
+}
+
+
+
+function calcularDias(hd){
+
+  const inicio = new Date(hd.fechaAsignacion);
+  const fin = hd.fechaCierre ? new Date(hd.fechaCierre) : new Date();
+
+  return Math.floor((fin-inicio)/(1000*60*60*24));
+}
+
+function renderHDChart(){
+
+  const p = Store.getProject();
+
+  let barras = "";
+
+  p.equipos.forEach(m=>{
+    if(!m.hds) return;
+
+    m.hds.forEach(hd=>{
+      const dias = calcularDias(hd);
+
+      barras += `
+        <div style="margin:6px 0;">
+          <strong>${hd.numero}</strong>
+          <div style="background:#e5e7eb;height:22px;border-radius:6px;">
+            <div style="
+              width:${dias*5}px;
+              background:#2563eb;
+              height:22px;
+              border-radius:6px;
+              color:white;
+              text-align:center;
+              font-size:12px;">
+              ${dias} días
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  });
+
+  return `
+    <div style="margin-top:30px;">
+      <h4>Tiempo de atención de HDs x persona</h4>
+      ${barras || "<em>No hay datos</em>"}
+    </div>
+  `;
+}
+
+async function exportHD(){
+
+const data = Store.state.hdsGlobal || [];
+
+const wb = new ExcelJS.Workbook();
+const ws = wb.addWorksheet("HDs");
+
+ws.columns = [
+{header:"HD",key:"HD",width:10},
+{header:"Proyecto",key:"Proyecto",width:25},
+{header:"Informador",key:"Informador",width:20},
+{header:"Asignada",key:"Asignada",width:20},
+{header:"Prioridad",key:"Prioridad",width:12},
+{header:"Severidad",key:"Severidad",width:12},
+{header:"Estatus",key:"Estatus",width:18},
+{header:"Resolucion",key:"Resolucion",width:18},
+{header:"Categoria",key:"Categoria",width:20},
+{header:"FechaEnvio",key:"FechaEnvio",width:15},
+{header:"UltimaActualizacion",key:"UltimaActualizacion",width:20},
+{header:"Resumen",key:"Resumen",width:60},
+{header:"Comentarios",key:"Comentarios",width:40}
+];
+
+data.forEach(h=>{
+
+ws.addRow({
+HD:h.id,
+Proyecto:h.project,
+Informador:h.reporter,
+Asignada:h.handler,
+Prioridad:h.priority,
+Severidad:h.severity,
+Estatus:h.status,
+Resolucion:h.resolution,
+Categoria:h.category,
+FechaEnvio:formatDate(h.date_submitted),
+UltimaActualizacion:formatDate(h.last_updated),
+Resumen:h.summary,
+Comentarios:h.comment||""
+});
+
+});
+
+const headerRow = ws.getRow(1);
+
+headerRow.eachCell(cell=>{
+cell.fill={
+type:"pattern",
+pattern:"solid",
+fgColor:{argb:"FF1F4E78"}
+};
+cell.font={
+color:{argb:"FFFFFFFF"},
+bold:true
+};
+cell.alignment={horizontal:"center"};
+});
+
+ws.eachRow((row,rowNumber)=>{
+
+if(rowNumber===1) return;
+
+const status=row.getCell(7).value;
+
+let color="FFFFFFFF";
+
+if(status==="nueva") color="FFF8CBAD";
+if(status==="se necesitan más datos") color="FFE4DFEC";
+if(status==="Análisis DAT") color="FFFCE4D6";
+if(status==="confirmada") color="FFFFF2CC";
+if(status==="asignada") color="FFDDEBF7";
+if(status==="suspendida") color="FFFF0000";
+if(status==="Atendida/Esperando Vo.Bo.") color="FFC6EFCE";
+if(status==="cerrada") color="FFD9D9D9";
+
+row.getCell(7).fill={
+type:"pattern",
+pattern:"solid",
+fgColor:{argb:color}
+};
+
+});
+
+const buffer = await wb.xlsx.writeBuffer();
+
+const blob = new Blob([buffer],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+
+const link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+link.download="Reporte_Control_HDs.xlsx";
+link.click();
+
+}
+
+/* =========================================================
+   FIN BLOQUE 3
+========================================================= */
+/* =========================================================
+   PLAN DE TRABAJO ENTERPRISE
+========================================================= */
+
+function renderPlan(){
+
+  const p = Store.getProject();
+
+  let html = `
+    <div class="card">
+      <div style="display:flex; gap:10px; margin-bottom:15px;">
+      <button class="primary" onclick="openActividad(null)">+ Actividad Padre</button>
+      <button onclick="exportarPlanProfesional()">Exportar Plan Excel</button>
+      <button onclick="exportarGanttImagen()">Exportar Gantt</button>
+      </div>
+      <table id="tablaPlanTrabajo">
+        <tr>
+          <th>ID</th>
+          <th>Actividad</th>
+          <th>Responsable</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>%</th>
+
+        </tr>
+  `;
+
+  const ordered = buildJerarquia(p.plan);
+
+  ordered.forEach(a=>{
+
+  let rowStyle = "";
+
+  // 🔥 SOLO PADRES
+  if(!a.parentId){
+
+    const hijos = ordered.filter(h=>h.parentId===a.id);
+
+    if(hijos.length){
+
+      const hoy = new Date();
+
+      const algunRetrasado = hijos.some(h=>{
+        const [y,m,d] = h.fin.split("-").map(Number);
+        const finHijo = new Date(y,m-1,d);
+        return finHijo < hoy && Number(h.porcentaje) < 100;
+      });
+
+      const todosCompletos = hijos.every(h=>Number(h.porcentaje)===100);
+
+      if(algunRetrasado){
+        rowStyle = "background:#fee2e2; color:#991b1b;"; // rojo claro
+      }
+      else if(todosCompletos){
+        rowStyle = "background:#dcfce7; color:#065f46;"; // verde claro
+      }
+      else{
+        rowStyle = "background:#fef9c3; color:#854d0e;"; // amarillo claro
+      }
+    }
+  }
+
+  html+=`
+    <tr style="${rowStyle}">
+      <td>${a.codigo}</td>
+      <td>${"&nbsp;".repeat(a.nivel*4)}${a.nombre}</td>
+      <td>${a.responsable || "-"}</td>
+      <td>${a.inicio}</td>
+      <td>${a.fin}</td>
+      <td>${a.porcentaje||0}%</td>
+      <td>
+        <button onclick="editActividad(${a.id})">Editar</button>
+        <button onclick="openActividad(${a.id})">+</button>
+        <button class="danger" onclick="deleteActividad(${a.id})">X</button>
+      </td>
+    </tr>
+  `;
+});
+
+
+  html+=`</table></div>`;
+  html+=renderGantt(ordered);
+
+  document.getElementById("app").innerHTML = html;
+}
+
+function editActividad(id){
+
+  const p = Store.getProject();
+  const act = p.plan.find(a=>a.id===id);
+
+  if(!act){
+    UI.toast("Actividad no encontrada","error");
+    return;
+  }
+
+  UI.openModal(`
+    <h3>Editar Actividad</h3>
+
+    <div class="form-group">
+      <label>Nombre</label>
+      <input id="editActNombre" value="${act.nombre}">
+    </div>
+
+    <div class="form-group">
+      <label>Responsable</label>
+      <input id="editActResponsable" value="${act.responsable || ""}">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Inicio</label>
+      <input type="date" id="editActInicio" value="${act.inicio}">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Fin</label>
+      <input type="date" id="editActFin" value="${act.fin}">
+    </div>
+
+    ${act.parentId ? `
+  <div class="form-group">
+    <label>% Avance</label>
+    <input type="number" id="editActPorcentaje" min="0" max="100" value="${act.porcentaje}">
+  </div>
+` : `
+  <div class="form-group">
+    <label>% Avance</label>
+    <input type="number" value="${act.porcentaje}" disabled>
+    <small style="color:#666;">Se calcula automáticamente por sus actividades hijas</small>
+  </div>
+`}
+
+
+    <div class="modal-actions">
+      <button class="primary" onclick="updateActividad(${id})">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function updateActividad(id){
+
+  const p = Store.getProject();
+  const act = p.plan.find(a=>a.id===id);
+
+  if(!act){
+    UI.toast("Error al actualizar","error");
+    return;
+  }
+
+  act.nombre = document.getElementById("editActNombre").value;
+  act.responsable = document.getElementById("editActResponsable").value;
+  act.inicio = document.getElementById("editActInicio").value;
+  act.fin = document.getElementById("editActFin").value;
+
+  // 🔥 SOLO actualizar porcentaje si es actividad hija
+  if(act.parentId){
+    const porcentajeInput = document.getElementById("editActPorcentaje");
+    if(porcentajeInput){
+      act.porcentaje = porcentajeInput.value;
+    }
+  }
+
+  Store.save();
+  UI.closeModal();
+  renderPlan();
+
+  UI.toast("Actividad actualizada","success");
+}
+
+function buildJerarquia(plan){
+
+  const padres = plan.filter(a=>!a.parentId);
+  let result = [];
+
+  padres.sort((a,b)=>a.id-b.id);
+
+  padres.forEach((padre,i)=>{
+
+    const codigoPadre = (i+1).toString();
+
+    // 🔥 Buscar hijos
+    const hijos = plan
+      .filter(h=>h.parentId===padre.id)
+      .sort((a,b)=>a.id-b.id);
+
+    // 🔥 Calcular porcentaje automático si tiene hijos
+    let porcentajePadre = padre.porcentaje || 0;
+
+    if(hijos.length){
+
+      const suma = hijos.reduce((acc,h)=>acc + Number(h.porcentaje||0),0);
+      porcentajePadre = Math.round(suma / hijos.length);
+
+      padre.porcentaje = porcentajePadre; // Actualiza modelo
+    }
+
+    result.push({
+      ...padre,
+      codigo:codigoPadre,
+      nivel:0,
+      porcentaje:porcentajePadre
+    });
+
+    hijos.forEach((h,j)=>{
+      result.push({
+        ...h,
+        codigo:codigoPadre+"."+(j+1),
+        nivel:1
+      });
+    });
+
+  });
+
+  return result;
+}
+
+
+
+function openActividad(parentId){
+
+  UI.openModal(`
+    <h3>Nueva Actividad</h3>
+
+    <div class="form-group">
+      <label>Nombre</label>
+      <input id="actNombre">
+    </div>
+
+    <div class="form-group">
+      <label>Responsable (Área)</label>
+      <input id="actResponsable">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Inicio</label>
+      <input type="date" id="actInicio">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Fin</label>
+      <input type="date" id="actFin">
+    </div>
+
+    <div class="form-group">
+      <label>% Avance</label>
+      <input type="number" id="actPorcentaje" min="0" max="100">
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addActividad(${parentId})">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+
+
+function addActividad(parentId){
+
+  const nombre = document.getElementById("actNombre").value.trim();
+  const responsable = document.getElementById("actResponsable").value.trim();
+  const inicio = document.getElementById("actInicio").value;
+  const fin = document.getElementById("actFin").value;
+  const porcentaje = document.getElementById("actPorcentaje").value || 0;
+
+  if(!nombre || !inicio || !fin){
+    UI.toast("Complete todos los campos","error");
+    return;
+  }
+
+  Store.getProject().plan.push({
+    id:Store.nextId("plan"),
+    parentId:parentId,
+    nombre,
+    responsable,   // 🔥 NUEVO CAMPO
+    inicio,
+    fin,
+    porcentaje
+  });
+
+  Store.save();
+  UI.closeModal();
+
+  if(currentRoute==="plan") renderPlan();
+  if(currentRoute==="dashboard") renderDashboard();
+}
+
+
+function deleteActividad(id){
+
+  const p = Store.getProject();
+  p.plan = p.plan.filter(a=>a.id!==id && a.parentId!==id);
+
+  Store.save();
+  renderPlan();
+}
+
+
+/* =========================================================
+   GANTT PROFESIONAL ENTERPRISE
+========================================================= */
+
+function renderGantt(ordered){
+
+  if(!ordered.length) return "";
+
+  // 🔥 FUNCIÓN SEGURA PARA CREAR FECHA LOCAL
+  function parseLocalDate(dateString){
+    const [year,month,day] = dateString.split("-").map(Number);
+    return new Date(year, month-1, day);
+  }
+
+  const fechas = ordered.flatMap(a=>[
+    parseLocalDate(a.inicio),
+    parseLocalDate(a.fin)
+  ]);
+
+  const min = new Date(Math.min(...fechas));
+  const max = new Date(Math.max(...fechas));
+
+  const totalDias = Math.ceil((max-min)/(1000*60*60*24))+1;
+
+  let dias = [];
+  for(let d=0; d<totalDias; d++){
+    const f = new Date(min);
+    f.setDate(min.getDate()+d);
+    dias.push(new Date(f));
+  }
+
+  let headerMes = `<div></div>`;
+  let headerSemana = `<div></div>`;
+  let headerDia = `<div></div>`;
+
+  let currentMes = "";
+  let mesStart = 0;
+
+  let currentSemana = "";
+  let semanaStart = 0;
+
+  dias.forEach((f,index)=>{
+
+    const mes = f.toLocaleDateString("es-MX",{month:"short"});
+    const semana = "S"+Math.ceil(f.getDate()/7);
+
+    if(mes !== currentMes){
+      if(index>0){
+        headerMes += `
+          <div class="g-cell" style="grid-column:${mesStart+2}/${index+2}; font-weight:bold;">
+            ${currentMes}
+          </div>
+        `;
+      }
+      currentMes = mes;
+      mesStart = index;
+    }
+
+    if(semana !== currentSemana){
+      if(index>0){
+        headerSemana += `
+          <div class="g-cell" style="grid-column:${semanaStart+2}/${index+2};">
+            ${currentSemana}
+          </div>
+        `;
+      }
+      currentSemana = semana;
+      semanaStart = index;
+    }
+
+    const isWeekend = f.getDay()===0 || f.getDay()===6;
+    const isToday = f.toDateString()===new Date().toDateString();
+
+    headerDia += `
+      <div class="g-cell ${isWeekend?'g-weekend':''} ${isToday?'g-today':''}">
+        ${f.getDate()}
+      </div>
+    `;
+  });
+
+  headerMes += `
+    <div class="g-cell" style="grid-column:${mesStart+2}/${dias.length+2}; font-weight:bold;">
+      ${currentMes}
+    </div>
+  `;
+
+  headerSemana += `
+    <div class="g-cell" style="grid-column:${semanaStart+2}/${dias.length+2};">
+      ${currentSemana}
+    </div>
+  `;
+
+  let html = `
+  <div class="card" id="contenedorGantt">
+<h3>Diagrama de Gantt</h3>
+    <div class="gantt-wrapper">
+  <div style="min-width:${220 + (totalDias*40)}px;">
+
+      <div class="g-row-grid" style="grid-template-columns:220px repeat(${totalDias},40px);">
+        ${headerMes}
+      </div>
+
+      <div class="g-row-grid" style="grid-template-columns:220px repeat(${totalDias},40px);">
+        ${headerSemana}
+      </div>
+
+      <div class="g-row-grid" style="grid-template-columns:220px repeat(${totalDias},40px);">
+        ${headerDia}
+      </div>
+  `;
+
+  ordered.forEach(a=>{
+
+    const inicio = parseLocalDate(a.inicio);
+    const fin = parseLocalDate(a.fin);
+
+    const start = Math.floor((inicio-min)/(1000*60*60*24));
+    const dur = Math.floor((fin-inicio)/(1000*60*60*24))+1;
+
+    html += `
+      <div class="g-row-grid" style="grid-template-columns:220px repeat(${totalDias},40px);">
+
+        <div class="g-label">
+          ${a.codigo} ${a.nombre}
+        </div>
+
+        ${Array(totalDias).fill('<div class="g-day-cell"></div>').join('')}
+
+        <div class="g-bar" style="grid-column:${start+2}/${start+dur+2};"></div>
+
+      </div>
+    `;
+  });
+
+  html += `
+         </div>
+    </div>
+  </div>
+  `;
+
+  return html;
+}
+
+
+/* =========================================================
+   FIN BLOQUE 4
+========================================================= */
+/* =========================================================
+   RIESGOS
+========================================================= */
+
+function renderRiesgos(){
+
+  const p = Store.getProject();
+
+  let html = `
+    <div class="card">
+      <button class="primary" onclick="openRiesgo()">+ Riesgo</button>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Descripción</th>
+          <th>Nivel</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+  `;
+
+  p.riesgos.forEach(r=>{
+
+  let rowStyle = "";
+
+  if(r.estado==="Abierto"){
+    rowStyle = "background:#fef9c3; color:#854d0e;"; // amarillo claro
+  }
+
+  if(r.estado==="Cerrado"){
+    rowStyle = "background:#dcfce7; color:#065f46;"; // verde claro
+  }
+
+  html+=`
+    <tr style="${rowStyle}">
+      <td>${r.id}</td>
+      <td>${r.descripcion}</td>
+      <td>${r.nivel}</td>
+      <td>${r.estado}</td>
+      <td>
+        <button onclick="editRiesgo(${r.id})">Editar</button>
+        <button class="danger" onclick="deleteRiesgo(${r.id})">X</button>
+      </td>
+    </tr>
+  `;
+});
+
+  html+=`</table></div>`;
+  document.getElementById("app").innerHTML = html;
+}
+
+function openRiesgo(){
+
+  UI.openModal(`
+    <h3>Nuevo Riesgo</h3>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <input id="riesgoDesc">
+    </div>
+
+    <div class="form-group">
+      <label>Nivel</label>
+      <select id="riesgoNivel">
+        <option>Bajo</option>
+        <option>Medio</option>
+        <option>Alto</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Estado</label>
+      <select id="riesgoEstado">
+        <option>Abierto</option>
+        <option>Cerrado</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addRiesgo()">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+
+}
+
+function addRiesgo(){
+
+  const descripcion = document.getElementById("riesgoDesc").value.trim();
+  const nivel = document.getElementById("riesgoNivel").value;
+  const estado = document.getElementById("riesgoEstado").value;
+
+  if(!descripcion){
+    UI.toast("Descripción requerida","error");
+    return;
+  }
+
+  Store.getProject().riesgos.push({
+    id:Store.nextId("riesgos"),
+    descripcion,
+    nivel,
+    estado
+  });
+
+  Store.save();
+  UI.closeModal();
+  renderRiesgos();
+  
+}
+function deleteRiesgo(id){
+
+  const p = Store.getProject();
+
+  const confirmar = confirm("¿Seguro que deseas eliminar este riesgo?");
+  if(!confirmar) return;
+
+  p.riesgos = p.riesgos.filter(r=>r.id!==id);
+
+  Store.save();
+
+  renderRiesgos();
+  
+
+  UI.toast("Riesgo eliminado","info");
+}
+function editRiesgo(id){
+
+  const p = Store.getProject();
+  const riesgo = p.riesgos.find(r=>r.id===id);
+
+  if(!riesgo){
+    UI.toast("Riesgo no encontrado","error");
+    return;
+  }
+
+  UI.openModal(`
+    <h3>Editar Riesgo</h3>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <input id="editRiesgoDesc" value="${riesgo.descripcion}">
+    </div>
+
+    <div class="form-group">
+      <label>Nivel</label>
+      <select id="editRiesgoNivel">
+        <option ${riesgo.nivel==="Bajo"?"selected":""}>Bajo</option>
+        <option ${riesgo.nivel==="Medio"?"selected":""}>Medio</option>
+        <option ${riesgo.nivel==="Alto"?"selected":""}>Alto</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Estado</label>
+      <select id="editRiesgoEstado">
+        <option ${riesgo.estado==="Abierto"?"selected":""}>Abierto</option>
+        <option ${riesgo.estado==="Cerrado"?"selected":""}>Cerrado</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="updateRiesgo(${id})">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+function updateRiesgo(id){
+
+  const p = Store.getProject();
+  const riesgo = p.riesgos.find(r=>r.id===id);
+
+  if(!riesgo){
+    UI.toast("Error al actualizar","error");
+    return;
+  }
+
+  riesgo.descripcion = document.getElementById("editRiesgoDesc").value;
+  riesgo.nivel = document.getElementById("editRiesgoNivel").value;
+  riesgo.estado = document.getElementById("editRiesgoEstado").value;
+
+  Store.save();
+  UI.closeModal();
+
+  renderRiesgos();
+  
+
+  UI.toast("Riesgo actualizado","success");
+}
+
+
+/* =========================================================
+   DEPENDENCIAS
+========================================================= */
+
+function renderDependencias(){
+
+  const p = Store.getProject();
+
+  let html = `
+    <div class="card">
+      <button class="primary" onclick="openDependencia()">+ Dependencia</button>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Descripción</th>
+          <th>Fecha Petición</th>
+          <th>Fecha Recepción</th>
+          <th>Estado</th>
+
+        </tr>
+  `;
+
+  p.dependencias.forEach(d=>{
+
+  let rowStyle = "";
+
+  if(d.estado==="Pendiente"){
+    rowStyle = "background:#fef9c3; color:#854d0e;"; // amarillo claro
+  }
+
+  if(d.estado==="Recibido"){
+    rowStyle = "background:#dcfce7; color:#065f46;"; // verde claro
+  }
+
+  html+=`
+  <tr style="${rowStyle}">
+    <td>${d.id}</td>
+    <td>${d.descripcion}</td>
+    <td>${d.fechaPeticion || "-"}</td>
+    <td>${d.fechaRecepcion || "-"}</td>
+    <td>${d.estado}</td>
+    <td>
+      <button onclick="editDependencia(${d.id})">Editar</button>
+      <button class="danger" onclick="deleteDependencia(${d.id})">X</button>
+    </td>
+  </tr>
+`;
+
+});
+
+
+  html+=`</table></div>`;
+  document.getElementById("app").innerHTML = html;
+}
+
+function openDependencia(){
+
+  UI.openModal(`
+    <h3>Nueva Dependencia</h3>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <input id="depDesc">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de Petición</label>
+      <input type="date" id="depFechaPeticion">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de Recepción</label>
+      <input type="date" id="depFechaRecepcion">
+    </div>
+
+    <div class="form-group">
+      <label>Estado</label>
+      <select id="depEstado">
+        <option>Pendiente</option>
+        <option>Recibido</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addDependencia()">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+
+function addDependencia(){
+
+  const descripcion = document.getElementById("depDesc").value.trim();
+  const fechaPeticion = document.getElementById("depFechaPeticion").value || null;
+  const fechaRecepcion = document.getElementById("depFechaRecepcion").value || null;
+  const estado = document.getElementById("depEstado").value;
+
+  if(!descripcion){
+    UI.toast("Descripción requerida","error");
+    return;
+  }
+
+  Store.getProject().dependencias.push({
+    id:Store.nextId("dependencias"),
+    descripcion,
+    fechaPeticion,
+    fechaRecepcion,
+    estado
+  });
+
+  Store.save();
+  UI.closeModal();
+
+  renderDependencias();
+  
+}
+
+
+function deleteDependencia(id){
+
+  const p = Store.getProject();
+
+  const confirmar = confirm("¿Seguro que deseas eliminar esta dependencia?");
+  if(!confirmar) return;
+
+  p.dependencias = p.dependencias.filter(d=>d.id!==id);
+
+  Store.save();
+
+  renderDependencias();
+  
+
+  UI.toast("Dependencia eliminada","info");
+}
+
+function editDependencia(id){
+
+  const p = Store.getProject();
+  const dep = p.dependencias.find(d=>d.id===id);
+
+  if(!dep){
+    UI.toast("Dependencia no encontrada","error");
+    return;
+  }
+
+  UI.openModal(`
+    <h3>Editar Dependencia</h3>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <input id="editDepDesc" value="${dep.descripcion}">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de Petición</label>
+      <input type="date" id="editDepFechaPeticion" value="${dep.fechaPeticion || ""}">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de Recepción</label>
+      <input type="date" id="editDepFechaRecepcion" value="${dep.fechaRecepcion || ""}">
+    </div>
+
+    <div class="form-group">
+      <label>Estado</label>
+      <select id="editDepEstado">
+        <option ${dep.estado==="Pendiente"?"selected":""}>Pendiente</option>
+        <option ${dep.estado==="Recibido"?"selected":""}>Recibido</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="updateDependencia(${id})">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function updateDependencia(id){
+
+  const p = Store.getProject();
+  const dep = p.dependencias.find(d=>d.id===id);
+
+  if(!dep){
+    UI.toast("Error al actualizar","error");
+    return;
+  }
+
+  dep.descripcion = document.getElementById("editDepDesc").value;
+  dep.fechaPeticion = document.getElementById("editDepFechaPeticion").value || null;
+  dep.fechaRecepcion = document.getElementById("editDepFechaRecepcion").value || null;
+  dep.estado = document.getElementById("editDepEstado").value;
+
+  Store.save();
+  UI.closeModal();
+
+  renderDependencias();
+
+  UI.toast("Dependencia actualizada","success");
+}
+
+
+
+
+/* =========================================================
+   DESVIACIONES
+========================================================= */
+
+function renderDesviaciones(){
+
+  const p = Store.getProject();
+
+  let html = `
+    <div class="card">
+      <button class="primary" onclick="openDesviacion('interna')">+ Interna</button>
+      <button class="warning" onclick="openDesviacion('cliente')">+ Cliente</button>
+      <table>
+        <tr>
+          <th>ID</th>
+         <th>Tipo</th>
+         <th>Descripción</th>
+         <th>Fecha Solicitud</th>
+         <th>Fecha Cierre</th>
+         <th>Días de desviación</th>
+         <th>Estatus</th>
+<th></th>
+
+        </tr>
+  `;
+
+  const todas = [
+    ...p.desviacionesInternas.map(d=>({...d,tipo:"Interna"})),
+    ...p.desviacionesCliente.map(d=>({...d,tipo:"Cliente"}))
+  ];
+
+  todas.forEach(d=>{
+
+  let rowStyle = "";
+
+  if(d.estado==="Abierta"){
+    rowStyle = "background:#fef9c3; color:#854d0e;"; // amarillo
+  }
+
+  if(d.estado==="Cerrada"){
+    rowStyle = "background:#dcfce7; color:#065f46;"; // verde
+  }
+
+  html+=`
+    <tr style="${rowStyle}">
+      <td>${d.id}</td>
+      <td>${d.tipo}</td>
+      <td>${d.descripcion}</td>
+      <td>${d.fechaSolicitud || "-"}</td>
+      <td>${d.fechaCierre || "-"}</td>
+      <td>${d.dias}</td>
+      <td>${d.estado}</td>
+      <td>
+        <button onclick="editDesviacion('${d.tipo}',${d.id})">Editar</button>
+        <button class="danger" onclick="deleteDesviacion('${d.tipo}',${d.id})">X</button>
+      </td>
+    </tr>
+  `;
+});
+
+
+  html+=`</table></div>`;
+  document.getElementById("app").innerHTML = html;
+}
+
+function openDesviacion(tipo){
+
+  UI.openModal(`
+    <h3>Nueva Desviación (${tipo})</h3>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <input id="desvDesc">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de Solicitud</label>
+      <input type="date" id="desvFechaSolicitud">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de Cierre</label>
+      <input type="date" id="desvFechaCierre">
+    </div>
+
+    <div class="form-group">
+      <label>Días</label>
+      <input type="number" id="desvDias">
+    </div>
+
+    <div class="form-group">
+      <label>Estatus</label>
+      <select id="desvEstado">
+        <option>Abierta</option>
+        <option>Cerrada</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addDesviacion('${tipo}')">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function addDesviacion(tipo){
+
+  const descripcion = document.getElementById("desvDesc").value.trim();
+  const fechaSolicitud = document.getElementById("desvFechaSolicitud").value || null;
+  const fechaCierre = document.getElementById("desvFechaCierre").value || null;
+  const dias = document.getElementById("desvDias").value || 0;
+  const estado = document.getElementById("desvEstado").value;
+
+  const obj = {
+    id:Store.nextId("desviaciones"),
+    descripcion,
+    fechaSolicitud,
+    fechaCierre,
+    dias,
+    estado
+  };
+
+  if(tipo==="interna"){
+    Store.getProject().desviacionesInternas.push(obj);
+  } else {
+    Store.getProject().desviacionesCliente.push(obj);
+  }
+
+  Store.save();
+  UI.closeModal();
+  renderDesviaciones();
+  
+}
+
+function editDesviacion(tipo,id){
+
+  const p = Store.getProject();
+
+  let lista = tipo==="Interna"
+    ? p.desviacionesInternas
+    : p.desviacionesCliente;
+
+  const desv = lista.find(d=>d.id===id);
+
+  if(!desv){
+    UI.toast("Desviación no encontrada","error");
+    return;
+  }
+
+  UI.openModal(`
+    <h3>Editar Desviación (${tipo})</h3>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <input id="editDesvDesc" value="${desv.descripcion}">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de Solicitud</label>
+      <input type="date" id="editDesvFechaSolicitud" value="${desv.fechaSolicitud || ""}">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha de Cierre</label>
+      <input type="date" id="editDesvFechaCierre" value="${desv.fechaCierre || ""}">
+    </div>
+
+    <div class="form-group">
+      <label>Días</label>
+      <input type="number" id="editDesvDias" value="${desv.dias}">
+    </div>
+
+    <div class="form-group">
+      <label>Estatus</label>
+      <select id="editDesvEstado">
+        <option ${desv.estado==="Abierta"?"selected":""}>Abierta</option>
+        <option ${desv.estado==="Cerrada"?"selected":""}>Cerrada</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="updateDesviacion('${tipo}',${id})">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+function updateDesviacion(tipo,id){
+
+  const p = Store.getProject();
+
+  let lista = tipo==="Interna"
+    ? p.desviacionesInternas
+    : p.desviacionesCliente;
+
+  const desv = lista.find(d=>d.id===id);
+
+  if(!desv){
+    UI.toast("Error al actualizar","error");
+    return;
+  }
+
+  desv.descripcion = document.getElementById("editDesvDesc").value;
+  desv.fechaSolicitud = document.getElementById("editDesvFechaSolicitud").value || null;
+  desv.fechaCierre = document.getElementById("editDesvFechaCierre").value || null;
+  desv.dias = document.getElementById("editDesvDias").value;
+  desv.estado = document.getElementById("editDesvEstado").value;
+
+  Store.save();
+  UI.closeModal();
+
+  renderDesviaciones();
+ 
+
+  UI.toast("Desviación actualizada","success");
+}
+
+function deleteDesviacion(tipo,id){
+
+  const confirmar = confirm("¿Seguro que deseas eliminar esta desviación?");
+  if(!confirmar) return;
+
+  const p = Store.getProject();
+
+  if(tipo === "Interna"){
+    p.desviacionesInternas = p.desviacionesInternas.filter(d=>d.id!==id);
+  } else {
+    p.desviacionesCliente = p.desviacionesCliente.filter(d=>d.id!==id);
+  }
+
+  Store.save();
+  renderDesviaciones();
+
+  UI.toast("Desviación eliminada","info");
+}
+
+
+/* =========================================================
+   PRUEBAS
+========================================================= */
+
+function getMensajeEstatus(estatus){
+  if(estatus==="Correcta") return "Se solicita pase a producción";
+  if(estatus==="Incidencia") return "Retorno a desarrollo";
+  return "";
+}
+function renderPruebas(){
+
+  const p = Store.getProject();
+
+  // 🔥 Blindaje para proyectos antiguos
+  if(!p.pruebasInternas) p.pruebasInternas = [];
+  if(!p.pruebasProductivas) p.pruebasProductivas = [];
+  if(!p.pruebasCliente) p.pruebasCliente = [];
+
+  // 🔥 Si existía el arreglo viejo, lo migramos a Internas
+  if(p.pruebas && p.pruebas.length){
+    p.pruebasInternas = [...p.pruebasInternas, ...p.pruebas];
+    delete p.pruebas;
+    Store.save();
+  }
+
+  let html = `
+    <div class="card">
+      <h3>Pruebas Internas</h3>
+      <button class="primary" onclick="openPrueba('Interna')">+ Prueba</button>
+      ${renderTablaPruebas(p.pruebasInternas,'Interna')}
+    </div>
+
+    <div class="card">
+      <h3>Pruebas Productivas</h3>
+      <button class="primary" onclick="openPrueba('Productiva')">+ Prueba</button>
+      ${renderTablaPruebas(p.pruebasProductivas,'Productiva')}
+    </div>
+
+    <div class="card">
+      <h3>Pruebas Cliente</h3>
+      <button class="primary" onclick="openPrueba('Cliente')">+ Prueba</button>
+      ${renderTablaPruebas(p.pruebasCliente,'Cliente')}
+    </div>
+  `;
+
+  document.getElementById("app").innerHTML = html;
+}
+
+function renderTablaPruebas(lista,tipo){
+
+  if(!lista) lista = [];
+
+  let html = `
+    <table>
+      <tr>
+        <th></th>
+        <th>Prueba</th>
+        <th>Versión</th>
+        <th>Fecha Ejecución</th>
+        <th>Estatus</th>
+        <th>Acción</th>
+      </tr>
+  `;
+
+  lista.forEach(pr=>{
+
+    if(!pr.versiones || !pr.versiones.length) return;
+
+    const ultima = pr.versiones[pr.versiones.length-1];
+    const isOpen = pr._expanded;
+
+    let accion = "";
+    if(ultima.estatus==="Correcta"){
+      accion = "Se solicita pase a producción";
+    }
+    if(ultima.estatus==="Incidencia"){
+      accion = "Retorno a desarrollo";
+    }
+
+    // 🔵 FILA PRINCIPAL (MISMO NIVEL)
+    html+=`
+  <tr style="background:#f8fafc; font-weight:bold;">
+    <td>
+      ${pr.versiones.length > 1 
+        ? `<button onclick="togglePrueba('${tipo}',${pr.id})">
+            ${isOpen ? "-" : "+"}
+          </button>`
+        : ""
+      }
+    </td>
+    <td>${pr.descripcion}</td>
+    <td>v${ultima.version}</td>
+    <td>${ultima.fechaEjecucion || "-"}</td>
+    <td>
+  <span class="${
+    ultima.estatus==="Correcta"
+      ? "status-aprobado"
+      : "status-incidencia"
+  }">
+    ${ultima.estatus}
+  </span>
+  <div style="font-size:11px; font-weight:normal;">
+    ${getMensajeEstatus(ultima.estatus)}
+  </div>
+</td>
+    <td style="white-space:nowrap;">
+      <button onclick="openNuevaEjecucion('${tipo}',${pr.id})">
+        Nueva Ejecución
+      </button>
+      <button class="danger" onclick="deletePruebaPadre('${tipo}',${pr.id})">
+        Eliminar
+      </button>
+    </td>
+  </tr>
+`;
+
+    // 🔽 HISTORIAL (si está expandido)
+    if(isOpen && pr.versiones.length > 1){
+
+      pr.versiones
+        .slice(0,-1)
+        .forEach(v=>{
+          html+=`
+            <tr style="background:#f1f5f9;">
+              <td></td>
+              <td style="padding-left:30px;">Histórico</td>
+              <td>v${v.version}</td>
+              <td>${v.fechaEjecucion || "-"}</td>
+              <td>
+  <span class="${
+    v.estatus==="Correcta"
+      ? "status-aprobado"
+      : "status-incidencia"
+  }">
+    ${v.estatus}
+  </span>
+  <div style="font-size:11px;">
+    ${getMensajeEstatus(v.estatus)}
+  </div>
+</td>
+              <td></td>
+            </tr>
+          `;
+        });
+
+    }
+
+  });
+
+  html+="</table>";
+  return html;
+}
+
+function openPrueba(tipo){
+
+  UI.openModal(`
+    <h3>Nueva Prueba (${tipo})</h3>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <input id="pruebaDesc">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Ejecución</label>
+      <input type="date" id="pruebaFecha">
+    </div>
+
+    <div class="form-group">
+      <label>Versión</label>
+      <input id="pruebaVersion" placeholder="Ej: v1.0">
+    </div>
+
+    <div class="form-group">
+      <label>Estatus</label>
+      <select id="pruebaStatus">
+        <option>Correcta</option>
+        <option>Incidencia</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addPrueba('${tipo}')">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+
+function addPrueba(tipo){
+
+  const p = Store.getProject();
+
+  let lista = tipo==="Interna"
+    ? p.pruebasInternas
+    : tipo==="Productiva"
+    ? p.pruebasProductivas
+    : p.pruebasCliente;
+
+  const descripcion = document.getElementById("pruebaDesc").value.trim();
+  const fecha = document.getElementById("pruebaFecha").value;
+  const estatus = document.getElementById("pruebaStatus").value;
+
+  if(!descripcion){
+    UI.toast("La descripción es obligatoria","error");
+    return;
+  }
+
+  if(!fecha){
+    UI.toast("La fecha es obligatoria","error");
+    return;
+  }
+
+  lista.push({
+    id: Store.nextId("pruebas"),
+    descripcion,
+    _expanded: true,   // 🔥 Se muestra automáticamente
+    versiones:[
+      {
+        version:1,
+        fechaEjecucion:fecha,
+        estatus
+      }
+    ]
+  });
+
+  Store.save();
+  UI.closeModal();
+  renderPruebas();
+}
+
+function togglePrueba(tipo,id){
+
+  const p = Store.getProject();
+
+  let lista = tipo==="Interna"
+    ? p.pruebasInternas
+    : tipo==="Productiva"
+    ? p.pruebasProductivas
+    : p.pruebasCliente;
+
+  const pr = lista.find(x=>x.id===id);
+
+  if(!pr) return;
+
+  pr._expanded = !pr._expanded;
+
+  Store.save();
+  renderPruebas();
+}
+
+function openNuevaEjecucion(tipo,id){
+
+  UI.openModal(`
+    <h3>Nueva Ejecución</h3>
+
+    <div class="form-group">
+      <label>Fecha Ejecución</label>
+      <input type="date" id="nuevaFecha">
+    </div>
+
+    <div class="form-group">
+      <label>Estatus</label>
+      <select id="nuevaEstatus">
+        <option>Correcta</option>
+        <option>Incidencia</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addNuevaEjecucion('${tipo}',${id})">
+        Guardar
+      </button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function addNuevaEjecucion(tipo,id){
+
+  const p = Store.getProject();
+
+  let lista = tipo==="Interna"
+    ? p.pruebasInternas
+    : tipo==="Productiva"
+    ? p.pruebasProductivas
+    : p.pruebasCliente;
+
+  const pr = lista.find(x=>x.id===id);
+
+  if(!pr){
+    UI.toast("Prueba no encontrada","error");
+    return;
+  }
+
+  const fecha = document.getElementById("nuevaFecha").value;
+  const estatus = document.getElementById("nuevaEstatus").value;
+
+  if(!fecha){
+    UI.toast("La fecha es obligatoria","error");
+    return;
+  }
+
+  // 🔥 Versionado seguro
+  const ultimaVersion = pr.versiones.length
+    ? Math.max(...pr.versiones.map(v=>v.version))
+    : 0;
+
+  pr.versiones.push({
+    version: ultimaVersion + 1,
+    fechaEjecucion: fecha,
+    estatus
+  });
+
+  Store.save();
+  UI.closeModal();
+  renderPruebas();
+}
+function deletePruebaPadre(tipo,id){
+
+  const confirmar = confirm("¿Seguro que deseas eliminar esta prueba y todas sus versiones?");
+  if(!confirmar) return;
+
+  const p = Store.getProject();
+
+  let lista = tipo==="Interna"
+    ? p.pruebasInternas
+    : tipo==="Productiva"
+    ? p.pruebasProductivas
+    : p.pruebasCliente;
+
+  lista = lista.filter(x=>x.id!==id);
+
+  if(tipo==="Interna") p.pruebasInternas = lista;
+  if(tipo==="Productiva") p.pruebasProductivas = lista;
+  if(tipo==="Cliente") p.pruebasCliente = lista;
+
+  Store.save();
+  renderPruebas();
+
+  UI.toast("Prueba eliminada","info");
+}
+
+ 
+
+
+
+
+/* =========================================================
+   COSTOS (CSV SIMPLE)
+========================================================= */
+
+function renderCostos(){
+
+  const p = Store.getProject();
+
+  if(!p.costos) p.costos = [];
+
+  let totalDias = 0;
+  let totalHoras = 0;
+  let totalCosto = 0;
+  let total130 = 0;
+  let total130_150 = 0;
+
+  let filas = "";
+
+  p.costos.forEach((c,i)=>{
+
+    const dias = Number(c["DURACION (DIAS )"] || 0);
+    const horas = Number(c["Horas Desarrollo"] || 0);
+    const costoHora = Number(c["Costo Hora"] || 0);
+
+    const costoTotal = horas * costoHora;
+
+    const costo130 = costoTotal * 1.3;
+    const costo130_150 = costo130 * 1.5;
+
+    totalDias += dias;
+    totalHoras += horas;
+    totalCosto += costoTotal;
+    total130 += costo130;
+    total130_150 += costo130_150;
+
+    filas+=`
+      <tr>
+        <td>${c["ID"] || ""}</td>
+        <td>${c["HD"] || ""}</td>
+        <td>${c["Aplicación/Actividad"] || ""}</td>
+        <td>${c["Arquetipo"] || ""}</td>
+        <td>${c["Módulo"] || ""}</td>
+        <td>${dias}</td>
+        <td>${horas}</td>
+        <td>$ ${costoHora.toLocaleString()}</td>
+        <td>$ ${costoTotal.toLocaleString()}</td>
+        <td>$ ${costo130.toLocaleString()}</td>
+        <td>$ ${costo130_150.toLocaleString()}</td>
+      </tr>
+    `;
+  });
+
+  let html = `
+    <div class="kpi-container">
+
+      <div class="kpi-card">
+        <h4>Total Días</h4>
+        <span>${totalDias}</span>
+      </div>
+
+      <div class="kpi-card">
+        <h4>Total Horas Desarrollo</h4>
+        <span>${totalHoras}</span>
+      </div>
+
+      <div class="kpi-card">
+        <h4>Total Costo</h4>
+        <span>$ ${totalCosto.toLocaleString()}</span>
+      </div>
+
+      <div class="kpi-card">
+        <h4>Total Costo ×1.3</h4>
+        <span>$ ${total130.toLocaleString()}</span>
+      </div>
+
+      <div class="kpi-card">
+        <h4>Total Costo ×1.3 ×1.5</h4>
+        <span>$ ${total130_150.toLocaleString()}</span>
+      </div>
+
+    </div>
+
+    <div class="card">
+      <input type="file" id="csvInput">
+      <button class="primary" onclick="importCSV()">Importar UTF</button>
+      <button class="danger" onclick="clearCostos()">Eliminar archivo</button>
+
+
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>HD</th>
+          <th>Aplicación/Actividad</th>
+          <th>Arquetipo</th>
+          <th>Módulo</th>
+          <th>DURACION (DIAS)</th>
+          <th>Horas Desarrollo</th>
+          <th>Costo Hora</th>
+          <th>Costo Total</th>
+          <th>Costo ×1.3</th>
+          <th>Costo ×1.3 ×1.5</th>
+        </tr>
+        ${filas}
+      </table>
+    </div>
+  `;
+   html += renderControlRealCostos();
+  document.getElementById("app").innerHTML = html;
+}
+
+function renderControlRealCostos(){
+
+  const p = Store.getProject();
+  if(!p.costos || !p.costos.length) return "";
+
+  let filas = "";
+  let totalBase = 0;
+  let totalReal = 0;
+  let totalVenta13 = 0;
+  let totalVenta195 = 0;
+
+  p.costos.forEach((c,i)=>{
+
+    const horas = Number(c["Horas Desarrollo"] || 0);
+    const costoHora = Number(c["Costo Hora"] || 0);
+
+    const costoBase = horas * costoHora;
+    const venta13 = costoBase * 1.3;
+    const venta195 = costoBase * 1.3 * 1.5;
+
+    const costoAdicional = Number(c.costoAdicional || 0);
+    const costoReal = costoBase + costoAdicional;
+
+    totalBase += costoBase;
+    totalReal += costoReal;
+    totalVenta13 += venta13;
+    totalVenta195 += venta195;
+
+    const margen13 = venta13 - costoReal;
+    const margen195 = venta195 - costoReal;
+
+    const clase13 = getClaseMargen(margen13, venta13);
+    const clase195 = getClaseMargen(margen195, venta195);
+
+    filas += `
+      <tr>
+        <td>${c["ID"]}</td>
+        <td>${c["HD"]}</td>
+        <td>
+          <input type="number"
+                 value="${c.horasAdicionales}"
+                 onchange="updateHorasAdicionales(${i}, this.value)">
+        </td>
+        <td>
+          <input type="number"
+                 value="${c.costoAdicional}"
+                 onchange="updateCostoAdicional(${i}, this.value)">
+        </td>
+        <td>$ ${costoReal.toLocaleString()}</td>
+        <td class="${clase13}">
+          $ ${margen13.toLocaleString()}
+        </td>
+        <td class="${clase195}">
+          $ ${margen195.toLocaleString()}
+        </td>
+      </tr>
+    `;
+  });
+
+  const resumen = `
+    <div style="margin-top:20px;">
+      <strong>Total Proyecto</strong><br>
+      Costo Base: $ ${totalBase.toLocaleString()}<br>
+      Costo Real: $ ${totalReal.toLocaleString()}<br>
+      Venta ×1.3: $ ${totalVenta13.toLocaleString()}<br>
+      Venta ×1.3×1.5: $ ${totalVenta195.toLocaleString()}<br>
+    </div>
+  `;
+
+  return `
+    <div class="card">
+      <h3>Control Real de Rentabilidad por HD</h3>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>HD</th>
+          <th>Horas adicionales</th>
+          <th>Costo adicional</th>
+          <th>Costo total HD</th>
+          <th>Margen vs ×1.3</th>
+          <th>Margen vs ×1.3×1.5</th>
+        </tr>
+        ${filas}
+      </table>
+      ${resumen}
+    </div>
+  `;
+}
+
+function updateHorasAdicionales(index,value){
+  const p = Store.getProject();
+  p.costos[index].horasAdicionales = Number(value);
+  Store.save();
+  renderCostos();
+}
+
+function updateCostoAdicional(index,value){
+  const p = Store.getProject();
+  p.costos[index].costoAdicional = Number(value);
+  Store.save();
+  renderCostos();
+}
+
+function getClaseMargen(margen, venta){
+  const porcentaje = (margen / venta) * 100;
+
+  if(porcentaje > 25) return "status-aprobado";
+  if(porcentaje > 10) return "status-warning";
+  if(porcentaje > 0) return "status-incidencia";
+  return "status-critico";
+}
+
+function importCSV(){
+
+  const file = document.getElementById("csvInput").files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+
+    const text = e.target.result;
+    const lines = text.split("\n");
+
+    // 🔎 Buscar inicio de tabla real
+    const startIndex = lines.findIndex(l => 
+      l.startsWith("ID,HD")
+    );
+
+    if(startIndex === -1){
+      alert("No se encontró la tabla de costos en el archivo.");
+      return;
+    }
+
+    // 🔎 Buscar fin de tabla (antes de Total Días Esfuerzo)
+    const endIndex = lines.findIndex((l,i) => 
+      i > startIndex && l.includes("Total Días Esfuerzo")
+    );
+
+    const tableLines = lines.slice(
+      startIndex,
+      endIndex === -1 ? lines.length : endIndex
+    );
+
+    // 🔥 Parser que respeta comillas
+    function parseLine(line){
+      const matches = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+      return matches ? matches.map(v =>
+        v.replace(/^"|"$/g,"").trim()
+      ) : [];
+    }
+
+    const headers = parseLine(tableLines[0]);
+
+    const data = tableLines.slice(1)
+      .filter(l => l.trim() !== "")
+      .map(l=>{
+        const values = parseLine(l);
+        let obj = {};
+        headers.forEach((h,i)=>{
+          obj[h.trim()] = values[i] 
+            ? values[i].replace(/\$/g,"").replace(/,/g,"").trim()
+            : "";
+        });
+        return obj;
+      });
+
+    Store.getProject().costos = data.map(row => ({
+  ...row,
+  horasAdicionales: 0,
+  costoAdicional: 0
+}));
+    Store.save();
+
+    renderCostos();
+   
+  };
+
+  reader.readAsText(file,"UTF-8");
+}
+
+function clearCostos(){
+
+  const confirmar = confirm("¿Seguro que deseas eliminar el archivo cargado?");
+  if(!confirmar) return;
+
+  const p = Store.getProject();
+
+  p.costos = [];
+
+  Store.save();
+
+  renderCostos();
+  
+
+  UI.toast("Archivo eliminado","info");
+
+}
+/* =========================================================
+   INCIDENCIAS
+========================================================= */
+
+
+function renderIncidencias(){
+
+  const p = Store.getProject();
+
+  let html = `
+    <div class="card">
+      <button class="primary" onclick="openIncidencia()">+ Incidencia</button>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Descripción</th>
+          <th>Proceso</th>
+          <th>Módulo</th>
+          <th>Fecha Reporte</th>
+          <th>HD Asociado</th>
+          <th>Estatus</th>
+          <th></th>
+        </tr>
+  `;
+
+  p.incidencias.forEach(i=>{
+
+    let rowStyle = "";
+
+    if(i.estatus==="Alertada") rowStyle="background:#fef9c3;";
+    if(i.estatus==="En atención") rowStyle="background:#dbeafe;";
+    if(i.estatus==="Cerrada") rowStyle="background:#dcfce7;";
+
+    html+=`
+      <tr style="${rowStyle}">
+        <td>${i.id}</td>
+        <td>${i.descripcion}</td>
+        <td>${i.proceso}</td>
+        <td>${i.modulo}</td>
+        <td>${i.fecha}</td>
+        <td>${i.hd || "-"}</td>
+        <td>${i.estatus}</td>
+        <td>
+          <button onclick="viewIncidencia(${i.id})">Ver</button>
+          <button onclick="editIncidencia(${i.id})">Editar</button>
+          <button class="danger" onclick="deleteIncidencia(${i.id})">X</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html+=`</table></div>`;
+  document.getElementById("app").innerHTML = html;
+}
+
+function openIncidencia(){
+
+  UI.openModal(`
+    <h3>Nueva Incidencia</h3>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <textarea id="incDesc"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Proceso afectado</label>
+      <input id="incProceso">
+    </div>
+
+    <div class="form-group">
+      <label>Módulo</label>
+      <input id="incModulo">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Reporte</label>
+      <input type="date" id="incFecha">
+    </div>
+
+    <div class="form-group">
+      <label>HD Asociado (opcional)</label>
+      <input id="incHD">
+    </div>
+
+    <div class="form-group">
+      <label>Estatus</label>
+      <select id="incStatus">
+        <option>Alertada</option>
+        <option>En atención</option>
+        <option>Cerrada</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addIncidencia()">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function addIncidencia(){
+
+  const p = Store.getProject();
+
+  p.incidencias.push({
+    id: Store.nextId("incidencias"),
+    descripcion: document.getElementById("incDesc").value,
+    proceso: document.getElementById("incProceso").value,
+    modulo: document.getElementById("incModulo").value,
+    fecha: document.getElementById("incFecha").value,
+    hd: document.getElementById("incHD").value,
+    estatus: document.getElementById("incStatus").value
+  });
+
+  Store.save();
+  UI.closeModal();
+  renderIncidencias();
+}
+
+function deleteIncidencia(id){
+
+  const p = Store.getProject();
+  p.incidencias = p.incidencias.filter(i=>i.id!==id);
+  Store.save();
+  renderIncidencias();
+}
+function viewIncidencia(id){
+
+  const p = Store.getProject();
+  const inc = p.incidencias.find(i=>i.id===id);
+  if(!inc) return;
+
+  let color = "#f3f4f6";
+  if(inc.estatus==="Alertada") color="#fef9c3";
+  if(inc.estatus==="En atención") color="#dbeafe";
+  if(inc.estatus==="Cerrada") color="#dcfce7";
+
+  UI.openModal(`
+    <h3>Detalle de Incidencia #${inc.id}</h3>
+
+    <div style="background:${color}; padding:10px; border-radius:8px; margin-bottom:15px;">
+      <strong>Estatus:</strong> ${inc.estatus}
+    </div>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <div>${inc.descripcion}</div>
+    </div>
+
+    <div class="form-group">
+      <label>Proceso Afectado</label>
+      <div>${inc.proceso}</div>
+    </div>
+
+    <div class="form-group">
+      <label>Módulo</label>
+      <div>${inc.modulo}</div>
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Reporte</label>
+      <div>${inc.fecha}</div>
+    </div>
+
+    <div class="form-group">
+      <label>HD Asociado</label>
+      <div>${inc.hd || "-"}</div>
+    </div>
+
+    <div class="modal-actions">
+      <button onclick="UI.closeModal()">Cerrar</button>
+    </div>
+  `);
+}
+
+function editIncidencia(id){
+
+  const p = Store.getProject();
+  const inc = p.incidencias.find(x=>x.id===id);
+  if(!inc){
+    UI.toast("Incidencia no encontrada","error");
+    return;
+  }
+
+  UI.openModal(`
+    <h3>Editar Incidencia #${inc.id}</h3>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <textarea id="editIncDesc">${inc.descripcion}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Proceso afectado</label>
+      <input id="editIncProceso" value="${inc.proceso}">
+    </div>
+
+    <div class="form-group">
+      <label>Módulo</label>
+      <input id="editIncModulo" value="${inc.modulo}">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Reporte</label>
+      <input type="date" id="editIncFecha" value="${inc.fecha}">
+    </div>
+
+    <div class="form-group">
+      <label>HD Asociado (opcional)</label>
+      <input id="editIncHD" value="${inc.hd || ""}">
+    </div>
+
+    <div class="form-group">
+      <label>Estatus</label>
+      <select id="editIncStatus">
+        <option ${inc.estatus==="Alertada"?"selected":""}>Alertada</option>
+        <option ${inc.estatus==="En atención"?"selected":""}>En atención</option>
+        <option ${inc.estatus==="Cerrada"?"selected":""}>Cerrada</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="updateIncidencia(${id})">Guardar Cambios</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function updateIncidencia(id){
+
+  const p = Store.getProject();
+  const inc = p.incidencias.find(x=>x.id===id);
+  if(!inc){
+    UI.toast("Error al actualizar","error");
+    return;
+  }
+
+  const descripcion = document.getElementById("editIncDesc").value.trim();
+  const proceso = document.getElementById("editIncProceso").value.trim();
+  const modulo = document.getElementById("editIncModulo").value.trim();
+  const fecha = document.getElementById("editIncFecha").value;
+  const hd = document.getElementById("editIncHD").value.trim();
+  const estatus = document.getElementById("editIncStatus").value;
+
+  if(!descripcion || !fecha){
+    UI.toast("Descripción y fecha son obligatorias","error");
+    return;
+  }
+
+  inc.descripcion = descripcion;
+  inc.proceso = proceso;
+  inc.modulo = modulo;
+  inc.fecha = fecha;
+  inc.hd = hd;
+  inc.estatus = estatus;
+
+  Store.save();
+  UI.closeModal();
+  renderIncidencias();
+
+  UI.toast("Incidencia actualizada","success");
+}
+
+/* =========================================================
+   BITACORA DE SEGUIMIENTO
+========================================================= */
+function renderBitacora(){
+
+  const p = Store.getProject();
+
+  let html = `
+    <div class="card">
+      <button class="primary" onclick="openBitacora()">+ Registro</button>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Correo</th>
+          <th>Fecha Envío</th>
+          <th>Estatus</th>
+          <th></th>
+        </tr>
+  `;
+
+  p.bitacora.forEach(b=>{
+
+    let badge = b.estado==="Respondido"
+      ? "<span class='badge ok'>Respondido</span>"
+      : "<span class='badge inc'>Sin respuesta</span>";
+
+    html+=`
+      <tr>
+        <td>${b.id}</td>
+        <td>${b.nombre}</td>
+        <td>${b.fecha}</td>
+        <td>${badge}</td>
+        <td>
+	  <button onclick="viewBitacora(${b.id})">Ver</button>
+          <button onclick="editBitacora(${b.id})">Editar</button>
+          <button class="danger" onclick="deleteBitacora(${b.id})">X</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html+=`</table></div>`;
+  document.getElementById("app").innerHTML = html;
+}
+
+function viewBitacora(id){
+
+  const p = Store.getProject();
+  const b = p.bitacora.find(x=>x.id===id);
+  if(!b) return;
+
+  const badge = b.estado==="Respondido"
+    ? "<span class='badge ok'>Respondido</span>"
+    : "<span class='badge inc'>Sin respuesta</span>";
+
+  UI.openModal(`
+    <h3>Detalle Bitácora #${b.id}</h3>
+
+    <div style="margin-bottom:15px;">
+      ${badge}
+    </div>
+
+    <div class="form-group">
+      <label>Nombre del Correo</label>
+      <div>${b.nombre}</div>
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Envío</label>
+      <div>${b.fecha}</div>
+    </div>
+
+    <div class="form-group">
+      <label>Contenido</label>
+      <div style="white-space:pre-wrap;">
+        ${b.descripcion}
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button onclick="UI.closeModal()">Cerrar</button>
+    </div>
+  `);
+}
+
+function openBitacora(){
+
+  UI.openModal(`
+    <h3>Nuevo Registro de Bitácora</h3>
+
+    <div class="form-group">
+      <label>Nombre del correo</label>
+      <input id="bitNombre">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha envío</label>
+      <input type="date" id="bitFecha">
+    </div>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <textarea id="bitDesc"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Estatus</label>
+      <select id="bitEstado">
+        <option>Sin respuesta</option>
+        <option>Respondido</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addBitacora()">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function addBitacora(){
+
+  const p = Store.getProject();
+
+  const nombre = document.getElementById("bitNombre").value.trim();
+  const fecha = document.getElementById("bitFecha").value;
+  const descripcion = document.getElementById("bitDesc").value.trim();
+  const estado = document.getElementById("bitEstado").value;
+
+  if(!nombre || !fecha){
+    UI.toast("Nombre y fecha son obligatorios","error");
+    return;
+  }
+
+  p.bitacora.push({
+    id: Store.nextId("bitacora"),
+    nombre,
+    fecha,
+    descripcion,
+    estado
+  });
+
+  Store.save();
+  UI.closeModal();
+  renderBitacora();
+}
+
+function editBitacora(id){
+
+  const p = Store.getProject();
+  const b = p.bitacora.find(x=>x.id===id);
+  if(!b) return;
+
+  UI.openModal(`
+    <h3>Editar Registro de Bitácora</h3>
+
+    <div class="form-group">
+      <label>Nombre del correo</label>
+      <input id="editBitNombre" value="${b.nombre}">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha envío</label>
+      <input type="date" id="editBitFecha" value="${b.fecha}">
+    </div>
+
+    <div class="form-group">
+      <label>Descripción</label>
+      <textarea id="editBitDesc">${b.descripcion}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Estatus</label>
+      <select id="editBitEstado">
+        <option ${b.estado==="Sin respuesta"?"selected":""}>Sin respuesta</option>
+        <option ${b.estado==="Respondido"?"selected":""}>Respondido</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="updateBitacora(${id})">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function updateBitacora(id){
+
+  const p = Store.getProject();
+  const b = p.bitacora.find(x=>x.id===id);
+  if(!b) return;
+
+  b.nombre = document.getElementById("editBitNombre").value.trim();
+  b.fecha = document.getElementById("editBitFecha").value;
+  b.descripcion = document.getElementById("editBitDesc").value.trim();
+  b.estado = document.getElementById("editBitEstado").value;
+
+  Store.save();
+  UI.closeModal();
+  renderBitacora();
+}
+
+function deleteBitacora(id){
+
+  const confirmar = confirm("¿Seguro que deseas eliminar este registro?");
+  if(!confirmar) return;
+
+  const p = Store.getProject();
+  p.bitacora = p.bitacora.filter(x=>x.id!==id);
+
+  Store.save();
+  renderBitacora();
+}
+/* =========================================================
+   MINUTA DE TRABAJO
+========================================================= */
+function renderMinutas(){
+
+  const p = Store.getProject();
+
+  let html = `
+    <div class="card">
+      <button class="primary" onclick="openMinuta()">+ Minuta</button>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Fecha</th>
+          <th></th>
+        </tr>
+  `;
+
+  p.minutas.forEach(m=>{
+
+    html+=`
+      <tr>
+        <td>${m.id}</td>
+        <td>${m.nombre}</td>
+        <td>${m.fecha}</td>
+        <td>
+          <button onclick="viewMinuta(${m.id})">Ver</button>
+          <button onclick="editMinuta(${m.id})">Editar</button>
+          <button class="danger" onclick="deleteMinuta(${m.id})">X</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html+=`</table></div>`;
+  document.getElementById("app").innerHTML = html;
+}
+function viewMinuta(id){
+
+  const p = Store.getProject();
+  const m = p.minutas.find(x=>x.id===id);
+  if(!m) return;
+
+  UI.openModal(`
+    <h3>Minuta: ${m.nombre}</h3>
+
+    <div class="form-group">
+      <label>Fecha Envío</label>
+      <div>${m.fecha}</div>
+    </div>
+
+    <div class="form-group">
+      <label>Puntos Tratados</label>
+      <div style="white-space:pre-wrap;">
+        ${m.detalle}
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button onclick="UI.closeModal()">Cerrar</button>
+    </div>
+  `);
+}
+
+function openMinuta(){
+
+  UI.openModal(`
+    <h3>Nueva Minuta</h3>
+
+    <div class="form-group">
+      <label>Nombre de la minuta</label>
+      <input id="minNombre">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha envío</label>
+      <input type="date" id="minFecha">
+    </div>
+
+    <div class="form-group">
+      <label>Puntos tratados</label>
+      <textarea id="minDetalle"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addMinuta()">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function addMinuta(){
+
+  const p = Store.getProject();
+
+  const nombre = document.getElementById("minNombre").value.trim();
+  const fecha = document.getElementById("minFecha").value;
+  const detalle = document.getElementById("minDetalle").value.trim();
+
+  if(!nombre || !fecha){
+    UI.toast("Nombre y fecha son obligatorios","error");
+    return;
+  }
+
+  p.minutas.push({
+    id: Store.nextId("minutas"),
+    nombre,
+    fecha,
+    detalle
+  });
+
+  Store.save();
+  UI.closeModal();
+  renderMinutas();
+}
+
+function editMinuta(id){
+
+  const p = Store.getProject();
+  const m = p.minutas.find(x=>x.id===id);
+  if(!m) return;
+
+  UI.openModal(`
+    <h3>Editar Minuta</h3>
+
+    <div class="form-group">
+      <label>Nombre de la minuta</label>
+      <input id="editMinNombre" value="${m.nombre}">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha envío</label>
+      <input type="date" id="editMinFecha" value="${m.fecha}">
+    </div>
+
+    <div class="form-group">
+      <label>Puntos tratados</label>
+      <textarea id="editMinDetalle">${m.detalle}</textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="updateMinuta(${id})">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function updateMinuta(id){
+
+  const p = Store.getProject();
+  const m = p.minutas.find(x=>x.id===id);
+  if(!m) return;
+
+  m.nombre = document.getElementById("editMinNombre").value.trim();
+  m.fecha = document.getElementById("editMinFecha").value;
+  m.detalle = document.getElementById("editMinDetalle").value.trim();
+
+  Store.save();
+  UI.closeModal();
+  renderMinutas();
+}
+
+
+function deleteMinuta(id){
+
+  const confirmar = confirm("¿Seguro que deseas eliminar esta minuta?");
+  if(!confirmar) return;
+
+  const p = Store.getProject();
+  p.minutas = p.minutas.filter(x=>x.id!==id);
+
+  Store.save();
+  renderMinutas();
+}
+
+/* =========================================================
+   COSTOS (CSV SIMPLE)
+
+/* =========================================================
+   SEGUIMIENTO EJECUTIVO GLOBAL
+========================================================= */
+
+function renderSeguimiento(){
+
+  const lista = Store.state.seguimientoGlobal || [];
+
+  let html = `
+  <div class="card">
+
+    <div style="display:flex; gap:10px; margin-bottom:15px;">
+  <button class="primary" onclick="openSeguimiento()">+ Registro</button>
+  <button onclick="descargarSeguimiento()">Descargar Imagen</button>
+  <button class="primary" onclick="exportarSeguimientoExcel()">Exportar Excel</button>
+</div>
+
+    <table id="tablaSeguimiento">
+        <tr>
+          <th>Cliente</th>
+          <th>Proyecto</th>
+          <th>Resumen</th>
+          <th>Prioridad</th>
+          <th>Estado</th>
+          <th>Fecha Estimada</th>
+          <th></th>
+        </tr>
+  `;
+
+  const hoy = new Date();
+
+  lista.forEach(item=>{
+
+    let prioridadStyle="";
+    if(item.prioridad==="CRITICA") prioridadStyle="background:#dc2626;color:white;";
+    if(item.prioridad==="ALTA") prioridadStyle="background:#f59e0b;";
+    if(item.prioridad==="MEDIA") prioridadStyle="background:#facc15;";
+
+    let fechaStyle="";
+    if(item.fechaEstimadaSistema){
+      const estimada = new Date(item.fechaEstimadaSistema);
+      const diff = Math.ceil((estimada - hoy)/(1000*60*60*24));
+      if(diff < 0) fechaStyle="background:#dc2626;color:white;";
+      else if(diff <= 3) fechaStyle="background:#facc15;";
+    }
+
+    html+=`
+      <tr>
+        <td>${item.cliente}</td>
+        <td>${item.proyecto}</td>
+        <td>${item.resumen}</td>
+        <td style="${prioridadStyle}">${item.prioridad}</td>
+        <td>${item.estado}</td>
+        <td style="${fechaStyle}">
+          ${item.fechaEstimadaSistema || "-"}
+        </td>
+        <td>
+  <button onclick="editSeguimiento(${item.id})">Editar</button>
+  <button onclick="deleteSeguimiento(${item.id})">X</button>
+</td>
+      </tr>
+    `;
+  });
+
+  html+=`</table></div>`;
+  document.getElementById("app").innerHTML = html;
+}
+
+function openSeguimiento(){
+
+  UI.openModal(`
+    <h3>Nuevo Registro Seguimiento</h3>
+
+    <div class="form-group">
+      <label>Cliente</label>
+      <input id="segCliente">
+    </div>
+
+    <div class="form-group">
+      <label>Proyecto</label>
+      <input id="segProyecto">
+    </div>
+
+    <div class="form-group">
+      <label>Resumen</label>
+      <textarea id="segResumen"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Prioridad</label>
+      <select id="segPrioridad">
+        <option>CRITICA</option>
+        <option>ALTA</option>
+        <option>MEDIA</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Estado</label>
+      <input id="segEstado">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Estimada Sistema</label>
+      <input type="date" id="segFechaEstimada">
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="addSeguimiento()">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function addSeguimiento(){
+
+  Store.state.seguimientoGlobal.push({
+    id: Store.nextId("seguimientoGlobal"),
+    cliente: document.getElementById("segCliente").value,
+    proyecto: document.getElementById("segProyecto").value,
+    resumen: document.getElementById("segResumen").value,
+    prioridad: document.getElementById("segPrioridad").value,
+    estado: document.getElementById("segEstado").value,
+    fechaEstimadaSistema: document.getElementById("segFechaEstimada").value,
+    fechaActualizacion: new Date().toISOString().split("T")[0]
+  });
+
+  Store.save();
+  UI.closeModal();
+  renderSeguimiento();
+}
+
+function editSeguimiento(id){
+
+  const item = Store.state.seguimientoGlobal.find(x=>x.id===id);
+
+  if(!item){
+    UI.toast("Registro no encontrado","error");
+    return;
+  }
+
+  UI.openModal(`
+    <h3>Editar Entregable</h3>
+
+    <div class="form-group">
+      <label>Cliente</label>
+      <input id="editSegCliente" value="${item.cliente}">
+    </div>
+
+    <div class="form-group">
+      <label>Proyecto</label>
+      <input id="editSegProyecto" value="${item.proyecto}">
+    </div>
+
+    <div class="form-group">
+      <label>Resumen</label>
+      <textarea id="editSegResumen">${item.resumen}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Prioridad</label>
+      <select id="editSegPrioridad">
+        <option ${item.prioridad==="CRITICA"?"selected":""}>CRITICA</option>
+        <option ${item.prioridad==="ALTA"?"selected":""}>ALTA</option>
+        <option ${item.prioridad==="MEDIA"?"selected":""}>MEDIA</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Estado</label>
+      <input id="editSegEstado" value="${item.estado}">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha Estimada</label>
+      <input type="date" id="editSegFecha" value="${item.fechaEstimadaSistema}">
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary" onclick="updateSeguimiento(${id})">Guardar</button>
+      <button onclick="UI.closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function updateSeguimiento(id){
+
+  const item = Store.state.seguimientoGlobal.find(x=>x.id===id);
+
+  if(!item){
+    UI.toast("Error al actualizar","error");
+    return;
+  }
+
+  item.cliente = document.getElementById("editSegCliente").value;
+  item.proyecto = document.getElementById("editSegProyecto").value;
+  item.resumen = document.getElementById("editSegResumen").value;
+  item.prioridad = document.getElementById("editSegPrioridad").value;
+  item.estado = document.getElementById("editSegEstado").value;
+  item.fechaEstimadaSistema = document.getElementById("editSegFecha").value;
+
+  Store.save();
+  UI.closeModal();
+  renderSeguimiento();
+
+  UI.toast("Registro actualizado","success");
+}
+
+function deleteSeguimiento(id){
+
+  const confirmar = confirm("¿Seguro que deseas eliminar este registro?");
+  if(!confirmar) return;
+
+  Store.state.seguimientoGlobal =
+    Store.state.seguimientoGlobal.filter(x=>x.id!==id);
+
+  Store.save();
+  renderSeguimiento();
+}
+function descargarSeguimiento(){
+
+  const tabla = document.getElementById("tablaSeguimiento");
+
+  if(!tabla){
+    UI.toast("Tabla no encontrada","error");
+    return;
+  }
+
+  html2canvas(tabla, {
+    scale:2,
+    useCORS:true
+  }).then(canvas => {
+
+    const link = document.createElement("a");
+    link.download = "Seguimiento_Ejecutivo.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+
+    UI.toast("Imagen descargada correctamente","success");
+  });
+}
+
+async function exportarSeguimientoExcel(){
+
+  const data = Store.state.seguimientoGlobal || [];
+
+  if(!data.length){
+    UI.toast("No hay información para exportar","error");
+    return;
+  }
+
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet("Entregables");
+
+  ws.columns = [
+    {header:"Cliente",key:"cliente",width:20},
+    {header:"Proyecto",key:"proyecto",width:25},
+    {header:"Resumen",key:"resumen",width:40},
+    {header:"Prioridad",key:"prioridad",width:12},
+    {header:"Estado",key:"estado",width:15},
+    {header:"Fecha Estimada",key:"fecha",width:18}
+  ];
+
+  data.forEach(item=>{
+    ws.addRow({
+      cliente:item.cliente,
+      proyecto:item.proyecto,
+      resumen:item.resumen,
+      prioridad:item.prioridad,
+      estado:item.estado,
+      fecha:item.fechaEstimadaSistema
+    });
+  });
+
+  // 🔵 Encabezado azul
+  const header = ws.getRow(1);
+
+  header.eachCell(cell=>{
+    cell.fill={
+      type:"pattern",
+      pattern:"solid",
+      fgColor:{argb:"FF1F4E78"}
+    };
+    cell.font={color:{argb:"FFFFFFFF"},bold:true};
+    cell.alignment={horizontal:"center"};
+  });
+
+  // 🎨 Colores por prioridad
+  ws.eachRow((row,rowNumber)=>{
+    if(rowNumber===1) return;
+
+    const prioridad = row.getCell(5).value;
+
+    let color="FFFFFFFF";
+
+    if(prioridad==="CRITICA") color="FFFF0000";
+    if(prioridad==="ALTA") color="FFFFC000";
+    if(prioridad==="MEDIA") color="FFFFFF00";
+
+    row.getCell(5).fill={
+      type:"pattern",
+      pattern:"solid",
+      fgColor:{argb:color}
+    };
+  });
+
+  const buffer = await wb.xlsx.writeBuffer();
+
+  const blob = new Blob([buffer],{
+    type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "Entregables_Clientes.xlsx";
+  link.click();
+
+  UI.toast("Excel generado correctamente","success");
+}
+
+
+/* =========================================================
+EXPORTAR GANTT COMPLETO
+========================================================= */
+
+function exportarGanttImagen(){
+
+  const gantt = document.getElementById("contenedorGantt");
+
+  if(!gantt){
+    UI.toast("Gantt no encontrado","error");
+    return;
+  }
+
+  const wrapper = gantt.querySelector(".gantt-wrapper div");
+
+  html2canvas(wrapper,{
+    scale:2,
+    backgroundColor:"#ffffff",
+    width:wrapper.scrollWidth,
+    height:wrapper.scrollHeight
+  }).then(canvas=>{
+
+    const link = document.createElement("a");
+
+    link.download = "Gantt_Proyecto.png";
+    link.href = canvas.toDataURL("image/png");
+
+    link.click();
+
+    UI.toast("Gantt exportado correctamente","success");
+
+  });
+
+}
+
+
+/* =========================================================
+EXPORTAR PLAN PROFESIONAL A EXCEL CON GANTT
+========================================================= */
+
+function exportarPlanProfesional(){
+
+  const p = Store.getProject();
+  const ordered = buildJerarquia(p.plan);
+
+  if(!ordered.length){
+    UI.toast("No hay actividades","error");
+    return;
+  }
+
+  const fechas = ordered.flatMap(a=>[
+    new Date(a.inicio),
+    new Date(a.fin)
+  ]);
+
+  const min = new Date(Math.min(...fechas));
+  const max = new Date(Math.max(...fechas));
+
+  const dias = [];
+  let cursor = new Date(min);
+
+  while(cursor <= max){
+    dias.push(new Date(cursor));
+    cursor.setDate(cursor.getDate()+1);
+  }
+
+  let headerDias = "";
+  dias.forEach(d=>{
+    headerDias += `<th>${d.getDate()}/${d.getMonth()+1}</th>`;
+  });
+
+  let filas = "";
+
+  ordered.forEach(a=>{
+
+  const inicio = new Date(a.inicio);
+  const fin = new Date(a.fin);
+
+  let ganttCells = "";
+
+  dias.forEach(d=>{
+
+    if(d >= inicio && d <= fin){
+      ganttCells += `<td style="background:#2563eb;"></td>`;
+    }else{
+      ganttCells += `<td></td>`;
+    }
+
+  });
+
+  const indent = "&nbsp;".repeat(a.nivel*6);
+
+  let porcentaje = Number(a.porcentaje || 0);
+
+  let colorPorcentaje = "";
+
+  if(porcentaje === 100){
+    colorPorcentaje = "background:#16a34a;color:white;font-weight:bold;";
+  }
+  else if(porcentaje >= 80){
+    colorPorcentaje = "background:#2563eb;color:white;font-weight:bold;";
+  }
+  else if(porcentaje >= 40){
+    colorPorcentaje = "background:#facc15;font-weight:bold;";
+  }
+  else{
+    colorPorcentaje = "background:#dc2626;color:white;font-weight:bold;";
+  }
+
+  const esPadre = !a.parentId;
+
+  const estiloPadre = esPadre
+    ? "background:#0f172a;color:white;font-weight:bold;"
+    : "";
+
+  filas += `
+  <tr style="${estiloPadre}">
+    <td>${a.codigo}</td>
+    <td>${indent}${a.nombre}</td>
+    <td>${a.responsable || ""}</td>
+    <td>${a.inicio}</td>
+    <td>${a.fin}</td>
+    <td style="${colorPorcentaje}">
+      ${porcentaje}%
+    </td>
+    ${ganttCells}
+  </tr>
+  `;
+
+});
+
+  const html = `
+  <html xmlns:o="urn:schemas-microsoft-com:office:office"
+        xmlns:x="urn:schemas-microsoft-com:office:excel"
+        xmlns="http://www.w3.org/TR/REC-html40">
+
+  <head>
+  <meta charset="UTF-8">
+
+  <style>
+
+  table{
+    border-collapse:collapse;
+    font-family:Arial;
+    font-size:12px;
+  }
+
+  th{
+    background:#0f172a;
+    color:white;
+    padding:6px;
+    border:1px solid #ccc;
+  }
+
+  td{
+    padding:5px;
+    border:1px solid #ccc;
+  }
+
+  </style>
+
+  </head>
+
+  <body>
+
+  <h2>Plan de Trabajo</h2>
+
+  <table>
+
+  <tr>
+  <th>Codigo</th>
+  <th>Actividad</th>
+  <th>Responsable</th>
+  <th>Inicio</th>
+  <th>Fin</th>
+  <th>% Avance</th>
+  ${headerDias}
+  </tr>
+
+  ${filas}
+
+  </table>
+
+  </body>
+  </html>
+  `;
+
+  const blob = new Blob([html],{
+    type:"application/vnd.ms-excel"
+  });
+
+  const link = document.createElement("a");
+
+  link.href = URL.createObjectURL(blob);
+  link.download = "Plan_Trabajo_Gantt.xls";
+
+  link.click();
+
+  UI.toast("Excel generado correctamente","success");
+
+}
+
+function renderHD(){
+
+if(!Store.state.hdsGlobal){
+Store.state.hdsGlobal=[];
+}
+
+const hds = Store.state.hdsGlobal || [];
+
+let html=`
+<div class="card">
+
+<h2>Control de HD</h2>
+
+<button onclick="loadXML()">Cargar XML</button>
+<button onclick="addXML()">Agregar XML</button>
+<button onclick="clearHD()">Borrar HDs</button>
+<button onclick="exportHD()">Exportar Excel</button>
+
+<input type="file" id="xmlFile" style="display:none">
+
+</div>
+
+<div class="card">
+<div id="hdDashboard"></div>
+</div>
+
+<div class="card">
+
+<table id="tablaHD" border="1" style="width:100%;border-collapse:collapse">
+
+<thead>
+
+<tr>
+
+<th>HD</th>
+<th>Proyecto</th>
+<th>Informador</th>
+<th>Asignada a</th>
+<th>Prioridad</th>
+<th>Severidad</th>
+<th>Estatus</th>
+<th>Resolución</th>
+<th>Categoría</th>
+<th>Fecha envío</th>
+<th>Última actualización</th>
+<th>Resumen</th>
+<th>Comentarios</th>
+
+</tr>
+
+<tr>
+
+<th><input onkeyup="filterHD(0,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(1,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(2,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(3,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(4,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(5,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(6,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(7,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(8,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(9,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(10,this.value)" style="width:95%"></th>
+<th><input onkeyup="filterHD(11,this.value)" style="width:95%"></th>
+<th></th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+${hds.map((h,i)=>`
+
+<tr>
+
+<td>${h.id}</td>
+<td>${h.project}</td>
+<td>${h.reporter}</td>
+<td>${h.handler}</td>
+<td>${h.priority}</td>
+<td>${h.severity}</td>
+
+<td class="${statusClass(h.status)}">${h.status}</td>
+
+<td>${h.resolution}</td>
+<td>${h.category}</td>
+<td>${formatDate(h.date_submitted)}</td>
+<td>${formatDate(h.last_updated)}</td>
+<td>${h.summary}</td>
+
+<td contenteditable="true"
+oninput="updateComment(${i},this.innerText)">
+${h.comment||""}
+</td>
+
+</tr>
+
+`).join("")}
+
+</tbody>
+</table>
+
+</div>
+`;
+
+document.querySelector(".content").innerHTML=html;
+
+renderHDDashboard();
+
+}
+
+function parseXML(file){
+
+const reader=new FileReader();
+
+reader.onload=function(e){
+
+const xml=new DOMParser().parseFromString(e.target.result,"text/xml");
+
+const issues=[...xml.getElementsByTagName("issue")];
+
+const hoy = new Date();
+const diezDias = 10 * 24 * 60 * 60 * 1000;
+
+issues.forEach(issue=>{
+
+const id=issue.getElementsByTagName("id")[0]?.textContent;
+
+if(Store.state.hdsGlobal.find(h=>h.id==id)) return;
+
+const status=issue.getElementsByTagName("status")[0]?.textContent;
+
+const lastUpdated=issue.getElementsByTagName("last_updated")[0]?.textContent;
+
+const fechaActualizacion = new Date(Number(lastUpdated) * 1000);
+
+// 🔹 regla de filtrado para cerrados
+if(status === "cerrada"){
+
+if((hoy - fechaActualizacion) > diezDias){
+return;
+}
+
+}
+
+Store.state.hdsGlobal.push({
+
+id,
+project:issue.getElementsByTagName("project")[0]?.textContent.trim(),
+reporter:issue.getElementsByTagName("reporter")[0]?.textContent.trim(),
+handler:issue.getElementsByTagName("handler")[0]?.textContent.trim(),
+priority:issue.getElementsByTagName("priority")[0]?.textContent,
+severity:issue.getElementsByTagName("severity")[0]?.textContent,
+status,
+resolution:issue.getElementsByTagName("resolution")[0]?.textContent,
+category:issue.getElementsByTagName("category")[0]?.textContent,
+date_submitted:issue.getElementsByTagName("date_submitted")[0]?.textContent,
+last_updated:lastUpdated,
+summary:issue.getElementsByTagName("summary")[0]?.textContent,
+comment:""
+
+});
+
+});
+
+Store.save();
+
+renderHD();
+
+}
+
+reader.readAsText(file);
+
+}
+
+function loadXML(){
+
+document.getElementById("xmlFile").onchange=(e)=>{
+
+Store.state.hdsGlobal=[];
+
+parseXML(e.target.files[0]);
+
+}
+
+document.getElementById("xmlFile").click();
+
+}
+
+function addXML(){
+
+document.getElementById("xmlFile").onchange=(e)=>{
+
+parseXML(e.target.files[0]);
+
+}
+
+document.getElementById("xmlFile").click();
+
+}
+
+function clearHD(){
+
+if(!confirm("Borrar todos los HD?")) return;
+
+Store.state.hdsGlobal=[];
+
+Store.save();
+
+renderHD();
+
+}
+
+function renderHDDashboard(){
+
+const hds = Store.state.hdsGlobal || [];
+
+const count=(s)=>hds.filter(h=>h.status==s).length;
+
+document.getElementById("hdDashboard").innerHTML=`
+
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+
+<div class="card status-nueva" onclick="filterStatus('nueva')">Nuevas: ${count("nueva")}</div>
+
+<div class="card status-datos" onclick="filterStatus('se necesitan más datos')">Más datos: ${count("se necesitan más datos")}</div>
+
+<div class="card status-analisis" onclick="filterStatus('Análisis DAT')">Análisis DAT: ${count("Análisis DAT")}</div>
+
+<div class="card status-confirmada" onclick="filterStatus('confirmada')">Confirmadas: ${count("confirmada")}</div>
+
+<div class="card status-asignada" onclick="filterStatus('asignada')">Asignadas: ${count("asignada")}</div>
+
+<div class="card status-suspendida" onclick="filterStatus('suspendida')">Suspendidas: ${count("suspendida")}</div>
+
+<div class="card status-atendida" onclick="filterStatus('Atendida/Esperando Vo.Bo.')">Atendidas: ${count("Atendida/Esperando Vo.Bo.")}</div>
+
+<div class="card status-cerrada" onclick="filterStatus('cerrada')">Cerradas: ${count("cerrada")}</div>
+
+<div class="card" onclick="renderHD()">Mostrar todos</div>
+
+</div>
+
+`;
+
+}
+
+
+async function exportHD(){
+
+const data = Store.state.hdsGlobal || [];
+
+const wb = new ExcelJS.Workbook();
+const ws = wb.addWorksheet("HDs");
+
+ws.columns = [
+{header:"HD",key:"HD",width:10},
+{header:"Proyecto",key:"Proyecto",width:25},
+{header:"Informador",key:"Informador",width:20},
+{header:"Asignada",key:"Asignada",width:20},
+{header:"Prioridad",key:"Prioridad",width:12},
+{header:"Severidad",key:"Severidad",width:12},
+{header:"Estatus",key:"Estatus",width:18},
+{header:"Resolucion",key:"Resolucion",width:18},
+{header:"Categoria",key:"Categoria",width:20},
+{header:"FechaEnvio",key:"FechaEnvio",width:15},
+{header:"UltimaActualizacion",key:"UltimaActualizacion",width:20},
+{header:"Resumen",key:"Resumen",width:60},
+{header:"Comentarios",key:"Comentarios",width:40}
+];
+
+data.forEach(h=>{
+
+ws.addRow({
+HD:h.id,
+Proyecto:h.project,
+Informador:h.reporter,
+Asignada:h.handler,
+Prioridad:h.priority,
+Severidad:h.severity,
+Estatus:h.status,
+Resolucion:h.resolution,
+Categoria:h.category,
+FechaEnvio:formatDate(h.date_submitted),
+UltimaActualizacion:formatDate(h.last_updated),
+Resumen:h.summary,
+Comentarios:h.comment||""
+});
+
+});
+
+const headerRow = ws.getRow(1);
+
+headerRow.eachCell(cell=>{
+cell.fill={
+type:"pattern",
+pattern:"solid",
+fgColor:{argb:"FF1F4E78"}
+};
+cell.font={
+color:{argb:"FFFFFFFF"},
+bold:true
+};
+cell.alignment={horizontal:"center"};
+});
+
+ws.eachRow((row,rowNumber)=>{
+
+if(rowNumber===1) return;
+
+const status=row.getCell(7).value;
+
+let color="FFFFFFFF";
+
+if(status==="nueva") color="FFF8CBAD";
+if(status==="se necesitan más datos") color="FFE4DFEC";
+if(status==="Análisis DAT") color="FFFCE4D6";
+if(status==="confirmada") color="FFFFF2CC";
+if(status==="asignada") color="FFDDEBF7";
+if(status==="suspendida") color="FFFF0000";
+if(status==="Atendida/Esperando Vo.Bo.") color="FFC6EFCE";
+if(status==="cerrada") color="FFD9D9D9";
+
+row.getCell(7).fill={
+type:"pattern",
+pattern:"solid",
+fgColor:{argb:color}
+};
+
+});
+
+const buffer = await wb.xlsx.writeBuffer();
+
+const blob = new Blob([buffer],{
+type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+});
+
+const link=document.createElement("a");
+
+link.href=URL.createObjectURL(blob);
+link.download="Reporte_Control_HDs.xlsx";
+
+link.click();
+
+}
+function updateComment(index,text){
+
+Store.state.hdsGlobal[index].comment=text;
+
+Store.save();
+
+}
+
+function statusClass(status){
+
+switch(status){
+
+case "nueva":
+return "status-nueva";
+
+case "se necesitan más datos":
+return "status-datos";
+
+case "Análisis DAT":
+return "status-analisis";
+
+case "confirmada":
+return "status-confirmada";
+
+case "asignada":
+return "status-asignada";
+
+case "suspendida":
+return "status-suspendida";
+
+case "Atendida/Esperando Vo.Bo.":
+return "status-atendida";
+
+case "cerrada":
+return "status-cerrada";
+
+default:
+return "";
+
+}
+
+}
+
+
+function filterHD(col,value){
+
+const table=document.getElementById("tablaHD");
+
+const rows=[...table.getElementsByTagName("tr")].slice(2);
+
+value=value.toLowerCase();
+
+rows.forEach(r=>{
+
+const cell=r.getElementsByTagName("td")[col];
+
+if(!cell) return;
+
+const text=cell.textContent.toLowerCase();
+
+r.style.display=text.includes(value) ? "" : "none";
+
+});
+
+}
+
+
+function formatDate(ts){
+
+if(!ts) return "";
+
+const d = new Date(Number(ts)*1000);
+
+const day = String(d.getDate()).padStart(2,"0");
+const month = String(d.getMonth()+1).padStart(2,"0");
+const year = d.getFullYear();
+
+return `${day}/${month}/${year}`;
+
+}
+
+function filterStatus(status){
+
+const rows=document.querySelectorAll("#tablaHD tbody tr");
+
+rows.forEach(r=>{
+
+const cell=r.children[6];
+
+if(!cell) return;
+
+if(cell.textContent===status){
+r.style.display="";
+}else{
+r.style.display="none";
+}
+
+});
+
+}
+
+/* =========================================================
+   INICIALIZACIÓN FINAL
+========================================================= */
+
+Store.init();
+renderProjectSelector();
+renderRoute("dashboard");
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
+</body>
+</html>
